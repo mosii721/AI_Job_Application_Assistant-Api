@@ -1,0 +1,45 @@
+@url = http://localhost:5000/api/v1
+
+@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
+
+//admin
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "email":"mikealwanga97@gmail.com",
+  "password":"password7"
+}
+
+### Request password reset
+POST {{url}}/auth/request_password_change
+Content-Type: application/json
+
+{
+  "email": "mikealwanga97@gmail.com"
+}
+
+
+### Verify OTP and update password
+POST {{url}}/auth/verifyOtpAndUpdatePassword
+Content-Type: application/json
+
+{
+  "email": "mikealwanga97@gmail.com",
+  "otp": "636364",
+  "newPassword": "password7"
+}
+
+
+###
+POST {{url}}/users
+Content-Type: application/json
+
+
+{
+  "name": "Mike Kiprop Alwanga",
+  "phone":"0733031821",
+  "email":"mikealwanga97@gmail.com",
+  "password":"password",
+  "role":"admin"
+}
