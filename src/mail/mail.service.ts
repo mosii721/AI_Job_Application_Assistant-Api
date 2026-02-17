@@ -10,6 +10,7 @@ export class MailService {
       host: 'smtp.gmail.com',
       port: 587,
       secure: false,
+      family: 4,
       auth:{
         user: this.configService.getOrThrow<string>('EMAIL_USER'),
         pass: this.configService.getOrThrow<string>('EMAIL_PASS'),
