@@ -1,19 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { MasterProfilesModule } from './master_profiles/master_profiles.module';
-import { ResumesModule } from './resumes/resumes.module';
-import { JobDescriptionsModule } from './job_descriptions/job_descriptions.module';
-import { SkillsModule } from './skills/skills.module';
-import { WorkExperiencesModule } from './work_experiences/work_experiences.module';
-import { EducationsModule } from './educations/educations.module';
-import { AtsReportsModule } from './ats_reports/ats_reports.module';
-import { ResumeJobMatchesModule } from './resume_job_matches/resume_job_matches.module';
-import { TailoredResumesModule } from './tailored_resumes/tailored_resumes.module';
-import { CoverLettersModule } from './cover_letters/cover_letters.module';
-import { AtsCategoryScoresModule } from './ats_category_scores/ats_category_scores.module';
-import { AtsIssuesModule } from './ats_issues/ats_issues.module';
-import { KeywordResultsModule } from './keyword_results/keyword_results.module';
-import { AiSuggesstionsModule } from './ai_suggesstions/ai_suggesstions.module';
+
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
@@ -22,6 +10,11 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { LoggerMiddleware } from './logger.middleware';
 import { AtGuard } from './auth/guards';
+import { JobApplicationsModule } from './job_applications/job_applications.module';
+import { JobsModule } from './jobs/jobs.module';
+import { UserDocumentsModule } from './user_documents/user_documents.module';
+import { ApplicationDocumentsModule } from './application_documents/application_documents.module';
+import { ApplicationVersionsModule } from './application_versions/application_versions.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -35,23 +28,10 @@ import { AtGuard } from './auth/guards';
     }]
   }),
     UsersModule,
-    MasterProfilesModule, 
-    ResumesModule,
-    JobDescriptionsModule, 
-    SkillsModule, 
-    WorkExperiencesModule, 
-    EducationsModule, 
-    AtsReportsModule, 
-    ResumeJobMatchesModule, 
-    TailoredResumesModule, 
-    CoverLettersModule, 
-    AtsCategoryScoresModule, 
-    AtsIssuesModule, 
-    KeywordResultsModule, 
-    AiSuggesstionsModule, 
+    MasterProfilesModule,  
     DatabaseModule, 
     AuthModule, 
-    MailModule],
+    MailModule, JobApplicationsModule, JobsModule, UserDocumentsModule, ApplicationDocumentsModule, ApplicationVersionsModule],
   controllers: [],
   providers: [
     {

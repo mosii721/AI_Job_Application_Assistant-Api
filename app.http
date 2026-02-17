@@ -1,6 +1,9 @@
-@url = http://localhost:5000/api/v1
+@url = https://ai-job-application-assistant-api.onrender.com/api/v1
+@url1 = http://localhost:8080/api/v1
 
 @accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
+
 
 //admin
 POST {{url}}/auth/login
@@ -10,6 +13,14 @@ Content-Type: application/json
   "email":"mikealwanga97@gmail.com",
   "password":"password7"
 }
+
+###
+GET  {{ url}}/auth/logout/44896f4d-e55a-454e-a86c-db5a554f5200
+Authorization: Bearer {{accessToken}}
+
+###
+GET  {{ url}}/auth/refresh?id=d9f31b05-1dda-48a7-b960-3a088563e1e4
+Authorization: Bearer {{refreshToken}}
 
 ### Request password reset
 POST {{url}}/auth/request_password_change
@@ -32,6 +43,10 @@ Content-Type: application/json
 
 
 ###
+GET {{url}}/users
+Authorization: Bearer {{accessToken}}
+
+###
 POST {{url}}/users
 Content-Type: application/json
 
@@ -43,3 +58,21 @@ Content-Type: application/json
   "password":"password",
   "role":"admin"
 }
+
+###
+GET {{url}}/users/44896f4d-e55a-454e-a86c-db5a554f5200
+Authorization: Bearer {{accessToken}}
+
+###
+PATCH {{url}}/users/44896f4d-e55a-454e-a86c-db5a554f5200
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json  
+
+{
+  "name": "Mike Kiprop Alwanga",
+  "phone":"0733031821",
+  "email":"mikealwanga97@gmail.com"
+}
+
+DELETE {{url}}/users/44896f4d-e55a-454e-a86c-db5a554f5200 
+Authorization: Bearer {{accessToken}}

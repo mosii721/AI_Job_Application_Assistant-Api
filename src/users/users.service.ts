@@ -36,7 +36,14 @@ export class UsersService {
     }
 
     const savedUser = await this.userRepository.save(newUser)
-    await this.mailService.sendRegistrationEmail(savedUser.email,savedUser.name)
+    try {
+    await this.mailService.sendLoginEmail(
+      savedUser.email,
+      savedUser.name,
+    );
+  } catch (error) {
+    console.error('Login email failed:', error);
+  }
     return savedUser;
   }
 
