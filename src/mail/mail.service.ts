@@ -1,45 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 @Injectable()
 export class MailService {
-  private readonly transporter;
-  constructor(private readonly configService: ConfigService){
-    this.transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
-      family: 4,
-      auth:{
-        user: this.configService.getOrThrow<string>('EMAIL_USER'),
-        pass: this.configService.getOrThrow<string>('EMAIL_PASS'),
-      },
-    })
+  private readonly resend: Resend;
+  constructor(private readonly configService: ConfigService) {
+    this.resend = new Resend(
+      this.configService.getOrThrow<string>('RESEND_API_KEY'),
+    );
   }
 
 
   async sendLoginEmail(to: string, name: string){
     const mailOptions = {
-      from: `"Ai Job Application Assistant"<${this.configService.getOrThrow<string>('EMAIL_USER')}>`,
+      from: `"Ai Job Application Assistant"<onboarding@resend.dev>`,
       to: to,
       subject: 'Login Notification',
       text: `Hello ${name},\n\nYou have successfully logged in to your account.\n\nIf you did not perform this action, please contact support immediately.\n\nBest regards,\nYour Ai Job Application Assistant Team`,
     };
 
     try{
-      const info = await this.transporter.sendMail(mailOptions);
-      console.log('Login email sent: ', info.response);
-      return info;
-    }catch(error){
-      console.error('Error sending login email: ', error);
+      const info = await this.resend.emails.send(mailOptions);
+      if (info.error) {
+      throw new Error(info.error.message);
+    }
+
+    console.log('Login email sent:', info.data);
+    return info;
+
+    } catch (error) {
+      console.error('Error sending login email:', error);
       throw error;
     }
-  }
+}
 
 async sendRegistrationEmail(to: string, name: string) {
   const mailOptions = {
-    from: `"Ai Job Application Assistant" <${this.configService.get<string>('EMAIL_USER')}>`,
+    from: `"Ai Job Application Assistant" <onboarding@resend.dev>`,
     to,
     subject: 'Welcome to Ai Job Application Assistant!',
     text: `Hi ${name},
@@ -55,18 +53,23 @@ The Ai Job Application Assistant Team`,
   };
 
   try {
-    const info = await this.transporter.sendMail(mailOptions);
-    console.log('Registration email sent:', info.response);
+    const info = await this.resend.emails.send(mailOptions);
+    if (info.error) {
+      throw new Error(info.error.message);
+    }
+
+    console.log('Registration email sent:', info.data);
     return info;
-  } catch (error) {
-    console.error('Error sending registration email:', error);
-    throw error;
-  }
+
+    } catch (error) {
+      console.error('Error sending Registration email:', error);
+      throw error;
+    }
 }
 
   async sendOtpEmail(to:string,name:string,otp:string){
     const mailOptions = {
-    from: `"Ai Job Application Assistant" <${this.configService.get<string>('EMAIL_USER')}>`,
+    from: `"Ai Job Application Assistant" <onboarding@resend.dev>`,
     to,
     subject: 'Password Change Request',
     text: `Hi ${name},
@@ -84,18 +87,23 @@ The Ai Job Application Assistant Team`,
   };
 
   try {
-    const info = await this.transporter.sendMail(mailOptions);
-    console.log('OTP email sent:', info.response);
+    const info = await this.resend.emails.send(mailOptions);
+    if (info.error) {
+      throw new Error(info.error.message);
+    }
+
+    console.log('OTP email sent:', info.data);
     return info;
-  } catch (error) {
-    console.error('Error sending OTP email:', error);
-    throw error;
-  }
+
+    } catch (error) {
+      console.error('Error sending OTP email:', error);
+      throw error;
+    }
 }
 
 async sendPasswordChangeConfirmation(to: string, name: string) {
   const mailOptions = {
-    from: `"Ai Job Application Assistant" <${this.configService.get<string>('EMAIL_USER')}>`,
+    from: `"Ai Job Application Assistant" <onboarding@resend.dev>`,
     to,
     subject: 'Password Changed Successfully',
     text: `Hi ${name},
@@ -107,10 +115,19 @@ Best regards,
 The Ai Job Application Assistant Team`,
   };
 
-  try {
-    await this.transporter.sendMail(mailOptions);
+   try {
+    const info = await this.resend.emails.send(mailOptions);
+
+    if (info.error) {
+      throw new Error(info.error.message);
+    }
+
+    console.log('Password change confirmation email sent:', info.data);
+    return info;
+
   } catch (error) {
     console.error('Error sending password change confirmation email:', error);
+    throw error;
   }
 }
 

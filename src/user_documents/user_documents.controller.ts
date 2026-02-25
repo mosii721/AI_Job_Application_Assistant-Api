@@ -19,16 +19,16 @@ export class UserDocumentsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userDocumentsService.findOne(+id);
+    return this.userDocumentsService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDocumentDto: UpdateUserDocumentDto) {
-    return this.userDocumentsService.update(+id, updateUserDocumentDto);
+    return this.userDocumentsService.update(id, updateUserDocumentDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.userDocumentsService.remove(+id);
+    return this.userDocumentsService.remove(id);
   }
 }

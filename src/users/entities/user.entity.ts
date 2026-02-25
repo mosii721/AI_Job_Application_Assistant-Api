@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { JobApplication } from "src/job_applications/entities/job_application.entity";
+import { MasterProfile } from "src/master_profiles/entities/master_profile.entity";
+import { RecommendedJob } from "src/recommended_jobs/entities/recommended_job.entity";
+import { SuggestionFeedback } from "src/suggestion_feedbacks/entities/suggestion_feedback.entity";
+import { UserDocument } from "src/user_documents/entities/user_document.entity";
+import { UserPreference } from "src/user_preferences/entities/user_preference.entity";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn, Relation } from "typeorm";
 
 export enum Role{
     ADMIN = 'admin',
@@ -45,5 +51,23 @@ export class User {
 
     @Column({type:'timestamp', default:() => 'CURRENT_TIMESTAMP',onUpdate:'CURRENT_TIMESTAMP'})
     updatedAt: Date;
+
+    @OneToOne(() => MasterProfile, masterProfile => masterProfile.user)
+    masterProfile: Relation<MasterProfile>;
+
+    @OneToOne(() => UserPreference, userPreferences => userPreferences.user)
+    preferences: Relation<UserPreference>;
+
+    @OneToMany(() => JobApplication, (application) => application.user)
+    applications: JobApplication[];
+
+    @OneToMany(() => UserDocument, (document) => document.user)
+    documents: UserDocument[];
+
+    @OneToMany(() => RecommendedJob, (recommendation) => recommendation.user)
+    recommendations: RecommendedJob[];
+
+    @OneToMany(() => SuggestionFeedback, (feedback) => feedback.user)
+    suggestionFeedbacks: SuggestionFeedback[];
 
 }

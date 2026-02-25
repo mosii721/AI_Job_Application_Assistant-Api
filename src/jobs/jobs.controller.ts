@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
@@ -13,22 +13,25 @@ export class JobsController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('title') title?: string, @Query('company') company?: string, @Query('location') location?: string) {
+    if(title || company || location){
+      return this.jobsService.findAll(title, company, location);
+    }
     return this.jobsService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.jobsService.findOne(+id);
+    return this.jobsService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateJobDto: UpdateJobDto) {
-    return this.jobsService.update(+id, updateJobDto);
+    return this.jobsService.update(id, updateJobDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.jobsService.remove(+id);
+    return this.jobsService.remove(id);
   }
 }

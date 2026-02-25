@@ -19,16 +19,16 @@ export class ApplicationDocumentsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.applicationDocumentsService.findOne(+id);
+    return this.applicationDocumentsService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateApplicationDocumentDto: UpdateApplicationDocumentDto) {
-    return this.applicationDocumentsService.update(+id, updateApplicationDocumentDto);
+    return this.applicationDocumentsService.update(id, updateApplicationDocumentDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.applicationDocumentsService.remove(+id);
+    return this.applicationDocumentsService.remove(id);
   }
 }

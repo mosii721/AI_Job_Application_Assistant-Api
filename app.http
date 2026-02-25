@@ -1,7 +1,7 @@
-@url = https://ai-job-application-assistant-api.onrender.com/api/v1
-@url1 = http://localhost:8080/api/v1
+@url1 = https://ai-job-application-assistant-api.onrender.com/api/v1
+@url = http://localhost:5000/api/v1
 
-@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcxMzM2NDUyLCJleHAiOjE3NzEzMzczNTJ9.Uod5tcg5U3Np00IvFHIIgdAr02eHuli6MW487L8ILMI
+@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcyMDA3NTE2LCJleHAiOjE3NzIwMDg0MTZ9.8zoqpYJr2GWMNhd5h1wctnqiMejhZvUTPrl55K2U6es
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
 
 
@@ -74,5 +74,371 @@ Content-Type: application/json
   "email":"mikealwanga97@gmail.com"
 }
 
-DELETE {{url}}/users/44896f4d-e55a-454e-a86c-db5a554f5200 
+###
+DELETE {{url}}/users/f6d78958-add2-4601-9e84-e40c0f788bb3 
+Authorization: Bearer {{accessToken}}
+
+
+###
+POST {{url}}/application-documents
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "applicationId": "beaab228-ab10-4552-b053-d99eeb03794f",
+  "documentId":"4ffc923c-5e1b-4231-8128-ac8402e86b06",
+  "displayOrder":1
+}
+
+###
+GET {{url}}/application-documents
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{url}}/application-documents/44896f4d-e55a-454e-a86c-db5a554f5200
+Authorization: Bearer {{accessToken}}
+
+###
+PATCH {{url}}/application-documents/d1536b34-b876-4c54-8099-4107f12f56f0
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json  
+
+{
+  "displayOrder":2
+}
+
+###
+DELETE {{url}}/application-documents/d1536b34-b876-4c54-8099-4107f12f56f0
+Authorization: Bearer {{accessToken}}
+
+###
+POST {{url}}/application-timelines
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "applicationId": "beaab228-ab10-4552-b053-d99eeb03794f",
+  "eventType":"status_change",
+  "previousStatus":"ready_to_apply",
+  "newStatus":"applied"
+}
+
+###
+GET {{url}}/application-timelines
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{url}}/application-timelines/f5547a4d-1564-4d03-aca7-2c4db82e4ab9
+Authorization: Bearer {{accessToken}}
+
+###
+PATCH {{url}}/application-timelines/f5547a4d-1564-4d03-aca7-2c4db82e4ab9
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json  
+
+{
+  "eventType":"note_added"
+}
+
+###
+DELETE {{url}}/application-timelines/f5547a4d-1564-4d03-aca7-2c4db82e4ab9 
+Authorization: Bearer {{accessToken}}
+
+###
+POST {{url}}/application-versions
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "applicationId": "beaab228-ab10-4552-b053-d99eeb03794f",
+  "contentType":"email",
+  "contentData":"data",
+  "created_by":"user"
+}
+
+###
+GET {{url}}/application-versions
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{url}}/application-versions/216aa55b-fb35-4755-a2dc-03adc33280d7
+Authorization: Bearer {{accessToken}}
+
+###
+PATCH {{url}}/application-versions/216aa55b-fb35-4755-a2dc-03adc33280d7
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json  
+
+{
+  "created_by":"ai"
+}
+
+###
+DELETE {{url}}/application-versions/216aa55b-fb35-4755-a2dc-03adc33280d7
+Authorization: Bearer {{accessToken}}
+
+###
+POST {{url}}/job-applications
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "jobId": "4afea712-fabc-45e0-98da-0618bfea2154",
+  "userId":"c2f2cea3-fdbf-4898-b7a7-e825443e6309",
+  "profileVersionUsed":1,
+  "overallMatchScore":5,
+  "skillScore":5,
+  "experienceScore":6,
+  "educationScore":8,
+  "matchAnalysisJson":{
+    "overall_score":7,
+    "match_level":"good",
+    "strengths":["skills"],
+    "gaps":["education"],
+    "recommendations":["get a degree"],
+    "summary":"summary"
+  },
+  "tailoredResumeJson":{
+    "skills":["React"],
+    "summary":"summary"
+  },
+  "status":"applied"
+}
+
+###
+GET {{url}}/job-applications
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f
+Authorization: Bearer {{accessToken}}
+
+###
+PATCH {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json  
+
+{
+  "profileVersionUsed":2
+}
+
+###
+DELETE {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f
+Authorization: Bearer {{accessToken}}
+
+###
+POST {{url}}/jobs
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "title": "Web Developer",
+  "company":"Safaricom",
+  "location":"Nairobi,Westlands",
+  "raw_description":"raw description",
+  "job_embedding":[1],
+  "source_url":"https://www.example.net/",
+  "url_hash":"hash",
+  "structured_job_json":{
+    "title": "Web Developer",
+    "company":"Safaricom",
+    "location":"Nairobi,Westlands",
+    "seniority":"junior",
+    "mode":"onsite",
+    "job_type":"full_time",
+    "required_skills":["Html","react"],
+    "responsibilities":["Create web Pages","Maintain them"],
+    "application_method":"email"
+  }
+}
+
+###
+GET {{url}}/jobs
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{url}}/jobs/4afea712-fabc-45e0-98da-0618bfea2154
+Authorization: Bearer {{accessToken}}
+
+###
+PATCH {{url}}/jobs/4afea712-fabc-45e0-98da-0618bfea2154
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json  
+
+{
+  "company":"airtel"
+}
+
+###
+DELETE {{url}}/jobs/4afea712-fabc-45e0-98da-0618bfea2154
+Authorization: Bearer {{accessToken}}
+
+###
+POST {{url}}/master-profiles
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "userId": "c2f2cea3-fdbf-4898-b7a7-e825443e6309",
+  "version_number":1,
+  "resume_embedding":[1],
+  "structured_data_json":{
+    "summary": "Summary"
+  }
+}
+
+###
+GET {{url}}/master-profiles
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{url}}/master-profiles/7081686f-e3a6-485c-a814-b52da1571250
+Authorization: Bearer {{accessToken}}
+
+###
+PATCH {{url}}/master-profiles/7081686f-e3a6-485c-a814-b52da1571250
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json  
+
+{
+  "version_number":2
+}
+
+###
+DELETE {{url}}/master-profiles/7081686f-e3a6-485c-a814-b52da1571250 
+Authorization: Bearer {{accessToken}}
+
+###
+POST {{url}}/recommended-jobs
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "userId": "c2f2cea3-fdbf-4898-b7a7-e825443e6309",
+  "jobId":"4afea712-fabc-45e0-98da-0618bfea2154",
+  "basicMatchScore":0.4
+}
+
+###
+GET {{url}}/recommended-jobs
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{url}}/recommended-jobs/adabf1cd-1968-4320-9c03-5bb358131798
+Authorization: Bearer {{accessToken}}
+
+###
+PATCH {{url}}/recommended-jobs/adabf1cd-1968-4320-9c03-5bb358131798
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json  
+
+{
+  "basicMatchScore":0.2
+}
+
+###
+DELETE {{url}}/recommended-jobs/adabf1cd-1968-4320-9c03-5bb358131798
+Authorization: Bearer {{accessToken}}
+
+
+###
+POST {{url}}/suggestion-feedbacks
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "userId": "c2f2cea3-fdbf-4898-b7a7-e825443e6309",
+  "contentType":"skill",
+  "action":"accept"
+}
+
+###
+GET {{url}}/suggestion-feedbacks
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{url}}/suggestion-feedbacks/f3756632-5664-4b62-85b7-ba41acd8d0dc
+Authorization: Bearer {{accessToken}}
+
+###
+PATCH {{url}}/suggestion-feedbacks/f3756632-5664-4b62-85b7-ba41acd8d0dc
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json  
+
+{
+  "contentType":"email"
+}
+
+###
+DELETE {{url}}/suggestion-feedbacks/f3756632-5664-4b62-85b7-ba41acd8d0dc
+Authorization: Bearer {{accessToken}}
+
+###
+POST {{url}}/user-documents
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "userId": "c2f2cea3-fdbf-4898-b7a7-e825443e6309",
+  "name":"Resume",
+  "documentType":"resume",
+  "fileUrl":"https://www.example.net/",
+  "pageCount":2,
+  "fileSizeKb":50
+}
+
+###
+GET {{url}}/user-documents
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{url}}/user-documents/4ffc923c-5e1b-4231-8128-ac8402e86b06
+Authorization: Bearer {{accessToken}}
+
+###
+PATCH {{url}}/user-documents/4ffc923c-5e1b-4231-8128-ac8402e86b06
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json  
+
+{
+  "pageCount":3
+}
+
+###
+DELETE {{url}}/user-documents/4ffc923c-5e1b-4231-8128-ac8402e86b06
+Authorization: Bearer {{accessToken}}
+
+###
+POST {{url}}/user-preferences
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "userId": "c2f2cea3-fdbf-4898-b7a7-e825443e6309",
+  "preferredRoles":["Backend Developer", "Full Stack Developer"],
+  "industries":["Technology", "FinTech"],
+  "experienceLevel":"junior",
+  "locationPreference":["Nairobi", "Kutus"],
+  "jobType":["full_time", "internship"]
+}
+
+###
+GET {{url}}/user-preferences
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{url}}/user-preferences/cff8805f-670d-44cb-a1ed-711be6baf2eb
+Authorization: Bearer {{accessToken}}
+
+###
+PATCH {{url}}/user-preferences/cff8805f-670d-44cb-a1ed-711be6baf2eb
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json  
+
+{
+  "experienceLevel":"senior"
+}
+
+###
+DELETE {{url}}/user-preferences/cff8805f-670d-44cb-a1ed-711be6baf2eb
 Authorization: Bearer {{accessToken}}

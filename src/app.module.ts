@@ -15,6 +15,10 @@ import { JobsModule } from './jobs/jobs.module';
 import { UserDocumentsModule } from './user_documents/user_documents.module';
 import { ApplicationDocumentsModule } from './application_documents/application_documents.module';
 import { ApplicationVersionsModule } from './application_versions/application_versions.module';
+import { ApplicationTimelinesModule } from './application_timelines/application_timelines.module';
+import { UserPreferencesModule } from './user_preferences/user_preferences.module';
+import { RecommendedJobsModule } from './recommended_jobs/recommended_jobs.module';
+import { SuggestionFeedbacksModule } from './suggestion_feedbacks/suggestion_feedbacks.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -31,7 +35,7 @@ import { ApplicationVersionsModule } from './application_versions/application_ve
     MasterProfilesModule,  
     DatabaseModule, 
     AuthModule, 
-    MailModule, JobApplicationsModule, JobsModule, UserDocumentsModule, ApplicationDocumentsModule, ApplicationVersionsModule],
+    MailModule, JobApplicationsModule, JobsModule, UserDocumentsModule, ApplicationDocumentsModule, ApplicationVersionsModule, ApplicationTimelinesModule, UserPreferencesModule, RecommendedJobsModule, SuggestionFeedbacksModule],
   controllers: [],
   providers: [
     {

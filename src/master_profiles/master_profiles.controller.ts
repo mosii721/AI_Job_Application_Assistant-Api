@@ -19,16 +19,16 @@ export class MasterProfilesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.masterProfilesService.findOne(+id);
+    return this.masterProfilesService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateMasterProfileDto: UpdateMasterProfileDto) {
-    return this.masterProfilesService.update(+id, updateMasterProfileDto);
+    return this.masterProfilesService.update(id, updateMasterProfileDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.masterProfilesService.remove(+id);
+    return this.masterProfilesService.remove(id);
   }
 }

@@ -19,16 +19,16 @@ export class ApplicationVersionsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.applicationVersionsService.findOne(+id);
+    return this.applicationVersionsService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateApplicationVersionDto: UpdateApplicationVersionDto) {
-    return this.applicationVersionsService.update(+id, updateApplicationVersionDto);
+    return this.applicationVersionsService.update(id, updateApplicationVersionDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.applicationVersionsService.remove(+id);
+    return this.applicationVersionsService.remove(id);
   }
 }

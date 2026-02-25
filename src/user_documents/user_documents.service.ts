@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDocumentDto } from './dto/create-user_document.dto';
 import { UpdateUserDocumentDto } from './dto/update-user_document.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import {  UserDocument } from './entities/user_document.entity';
+import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class UserDocumentsService {
-  create(createUserDocumentDto: CreateUserDocumentDto) {
-    return 'This action adds a new userDocument';
+  constructor(
+    @InjectRepository(UserDocument) private readonly userDocumentRepository: Repository<UserDocument>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+  ) {}
+
+  async create(createUserDocumentDto: CreateUserDocumentDto) {
+    const existUser = await this.userRepository.findOneBy({ id: createUserDocumentDto.userId });
+
+    if(!existUser){
+      throw new NotFoundException(`User with id ${createUserDocumentDto.userId} not found`);
+    }
+
+    const newUserDocument = this.userDocumentRepository.create({
+      user: existUser,
+      name: createUserDocumentDto.name,
+      fileUrl: createUserDocumentDto.fileUrl,
+      pageCount: createUserDocumentDto.pageCount,
+      fileSizeKb: createUserDocumentDto.fileSizeKb,
+      certificateName: createUserDocumentDto.certificateName,
+      issuingOrg: createUserDocumentDto.issuingOrg,
+      issueDate: createUserDocumentDto.issueDate,
+      expiryDate: createUserDocumentDto.expiryDate,
+      documentType: createUserDocumentDto.documentType,
+    })
+    return this.userDocumentRepository.save(newUserDocument);
   }
 
-  findAll() {
-    return `This action returns all userDocuments`;
+  async findAll() {
+    return this.userDocumentRepository.find({relations:['user','applicationDocuments']});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} userDocument`;
+  async findOne(id: string) {
+    return await this.userDocumentRepository.findOne({where: {id}, relations:['user','applicationDocuments']});
   }
 
-  update(id: number, updateUserDocumentDto: UpdateUserDocumentDto) {
-    return `This action updates a #${id} userDocument`;
+  async update(id: string, updateUserDocumentDto: UpdateUserDocumentDto) {
+    return await this.userDocumentRepository.update(id, updateUserDocumentDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} userDocument`;
+  async remove(id: string) {
+    return await this.userDocumentRepository.delete(id);
   }
 }

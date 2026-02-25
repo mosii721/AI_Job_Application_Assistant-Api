@@ -53,11 +53,11 @@ export class UsersService {
       users = await this.userRepository.find({
         where: {email},
         select:['id','name','email','phone','role','profile_photo','createdAt','updatedAt'],
-        relations:[]
+        relations:['masterProfile','preferences','applications','documents','recommendations','suggestionFeedbacks']
       });
     }else{
       users = await this.userRepository.find({
-        relations:[]
+        relations:['masterProfile','preferences','applications','documents','recommendations','suggestionFeedbacks']
       })
     }
     return users.map((user) => user);

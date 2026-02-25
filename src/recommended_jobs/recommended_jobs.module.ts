@@ -1,0 +1,16 @@
+import { Module } from '@nestjs/common';
+import { RecommendedJobsService } from './recommended_jobs.service';
+import { RecommendedJobsController } from './recommended_jobs.controller';
+import { DatabaseModule } from 'src/database/database.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { RecommendedJob } from './entities/recommended_job.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Job } from 'src/jobs/entities/job.entity';
+import { RolesGuard } from 'src/auth/guards';
+
+@Module({
+  imports: [DatabaseModule,TypeOrmModule.forFeature([RecommendedJob,User,Job])],
+  controllers: [RecommendedJobsController],
+  providers: [RecommendedJobsService,RolesGuard],
+})
+export class RecommendedJobsModule {}
