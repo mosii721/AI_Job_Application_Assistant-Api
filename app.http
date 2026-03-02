@@ -1,10 +1,11 @@
 @url1 = https://ai-job-application-assistant-api.onrender.com/api/v1
 @url = http://localhost:5000/api/v1
 
-@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcyMDA3NTE2LCJleHAiOjE3NzIwMDg0MTZ9.8zoqpYJr2GWMNhd5h1wctnqiMejhZvUTPrl55K2U6es
+@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcyNDQwMTc0LCJleHAiOjE3NzI0NDI4NzR9.2PWsnznC_RbIxPuJlW62vk0RCkAqexug9A72cAYq0b8
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
+idUser = c145911f-a878-4c9a-9d9b-00adfb2c50b6
 
-
+###
 //admin
 POST {{url}}/auth/login
 Content-Type: application/json
@@ -12,6 +13,17 @@ Content-Type: application/json
 {
   "email":"mikealwanga97@gmail.com",
   "password":"password7"
+}
+
+
+###
+//user
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "email":"kipropmike58@gmail.com",
+  "password":"password"
 }
 
 ###
@@ -54,9 +66,9 @@ Content-Type: application/json
 {
   "name": "Mike Kiprop Alwanga",
   "phone":"0733031821",
-  "email":"mikealwanga97@gmail.com",
+  "email":"kipropmike58@gmail.com",
   "password":"password",
-  "role":"admin"
+  "role":"user"
 }
 
 ###
@@ -78,104 +90,99 @@ Content-Type: application/json
 DELETE {{url}}/users/f6d78958-add2-4601-9e84-e40c0f788bb3 
 Authorization: Bearer {{accessToken}}
 
-
+// add document to application app id is on the url 
 ###
-POST {{url}}/application-documents
+POST {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/documents
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
 
 {
-  "applicationId": "beaab228-ab10-4552-b053-d99eeb03794f",
-  "documentId":"4ffc923c-5e1b-4231-8128-ac8402e86b06",
-  "displayOrder":1
+  "documentId": "4ffc923c-5e1b-4231-8128-ac8402e86b06",
+  "displayOrder": 1
 }
 
+//get all docs from application
 ###
-GET {{url}}/application-documents
+GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/documents
 Authorization: Bearer {{accessToken}}
 
+//get all application docs
 ###
-GET {{url}}/application-documents/44896f4d-e55a-454e-a86c-db5a554f5200
+GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/documents/all
 Authorization: Bearer {{accessToken}}
 
+// reorder docs appp id on the url
 ###
-PATCH {{url}}/application-documents/d1536b34-b876-4c54-8099-4107f12f56f0
+PATCH {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/documents/reorder
 Authorization: Bearer {{accessToken}}
-Content-Type: application/json  
-
-{
-  "displayOrder":2
-}
-
-###
-DELETE {{url}}/application-documents/d1536b34-b876-4c54-8099-4107f12f56f0
-Authorization: Bearer {{accessToken}}
-
-###
-POST {{url}}/application-timelines
 Content-Type: application/json
-Authorization: Bearer {{accessToken}}
 
 {
-  "applicationId": "beaab228-ab10-4552-b053-d99eeb03794f",
-  "eventType":"status_change",
-  "previousStatus":"ready_to_apply",
-  "newStatus":"applied"
+  "documentIds": [
+    "4ffc923c-5e1b-4231-8128-ac8402e86b06",
+    "another-document-id"
+  ]
 }
 
+// remove docs from app
 ###
-GET {{url}}/application-timelines
+DELETE {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/documents/4ffc923c-5e1b-4231-8128-ac8402e86b06
 Authorization: Bearer {{accessToken}}
 
+
+
+//get full timeline for application
 ###
-GET {{url}}/application-timelines/f5547a4d-1564-4d03-aca7-2c4db82e4ab9
+GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/timeline
 Authorization: Bearer {{accessToken}}
 
+//get timeline filtered by event type satatus_change, note_added
 ###
-PATCH {{url}}/application-timelines/f5547a4d-1564-4d03-aca7-2c4db82e4ab9
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json  
-
-{
-  "eventType":"note_added"
-}
-
-###
-DELETE {{url}}/application-timelines/f5547a4d-1564-4d03-aca7-2c4db82e4ab9 
+GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/timeline?eventType=STATUS_CHANGE
 Authorization: Bearer {{accessToken}}
 
+//get one timeline event
 ###
-POST {{url}}/application-versions
-Content-Type: application/json
+GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/timeline/f5547a4d-1564-4d03-aca7-2c4db82e4ab9
 Authorization: Bearer {{accessToken}}
 
-{
-  "applicationId": "beaab228-ab10-4552-b053-d99eeb03794f",
-  "contentType":"email",
-  "contentData":"data",
-  "created_by":"user"
-}
-
+// get all timeline events adimn
 ###
-GET {{url}}/application-versions
+GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/timeline/all
 Authorization: Bearer {{accessToken}}
 
+
+
+//get all versions
 ###
-GET {{url}}/application-versions/216aa55b-fb35-4755-a2dc-03adc33280d7
+GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/versions/all
 Authorization: Bearer {{accessToken}}
 
+// get all versions for applications id on url
 ###
-PATCH {{url}}/application-versions/216aa55b-fb35-4755-a2dc-03adc33280d7
+GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/versions
 Authorization: Bearer {{accessToken}}
-Content-Type: application/json  
 
-{
-  "created_by":"ai"
-}
-
+//get versions filtered by content email,cover_letter and resume_bullet
 ###
-DELETE {{url}}/application-versions/216aa55b-fb35-4755-a2dc-03adc33280d7
+GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/versions?contentType=EMAIL
 Authorization: Bearer {{accessToken}}
+
+//get cover letter versions only
+###
+GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/versions/cover-letter
+Authorization: Bearer {{accessToken}}
+
+//get email versions only
+###
+GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/versions/email
+Authorization: Bearer {{accessToken}}
+
+//get one version scoped to app
+###
+GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/versions/resume-bullet
+Authorization: Bearer {{accessToken}}
+
 
 ###
 POST {{url}}/job-applications
@@ -183,30 +190,16 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "jobId": "4afea712-fabc-45e0-98da-0618bfea2154",
-  "userId":"c2f2cea3-fdbf-4898-b7a7-e825443e6309",
-  "profileVersionUsed":1,
-  "overallMatchScore":5,
-  "skillScore":5,
-  "experienceScore":6,
-  "educationScore":8,
-  "matchAnalysisJson":{
-    "overall_score":7,
-    "match_level":"good",
-    "strengths":["skills"],
-    "gaps":["education"],
-    "recommendations":["get a degree"],
-    "summary":"summary"
-  },
-  "tailoredResumeJson":{
-    "skills":["React"],
-    "summary":"summary"
-  },
-  "status":"applied"
+  "userId": "c2f2cea3-fdbf-4898-b7a7-e825443e6309",
+  "jobId": "4afea712-fabc-45e0-98da-0618bfea2154"
 }
 
 ###
 GET {{url}}/job-applications
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{url}}/job-applications/user/c2f2cea3-fdbf-4898-b7a7-e825443e6309
 Authorization: Bearer {{accessToken}}
 
 ###
@@ -220,35 +213,169 @@ Content-Type: application/json
 
 {
   "profileVersionUsed":2
+
 }
+// auto save tailored data
+###
+PATCH {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/tailored-data
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "section": "skills",
+  "newValue": ["React", "NestJS", "PostgreSQL"]
+}
+// update status
+###
+PATCH {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/status
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "status": "applied",
+  "notes": "Applied via company portal"
+}
+//finalize
+###
+POST {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/finalize
+Authorization: Bearer {{accessToken}}
+// generate cover letter ai
+###
+POST {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/cover-letter
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "tone": "professional",
+  "length": "medium",
+  "emphasize": ["leadership", "backend experience"]
+}
+//update cover letter content manually
+###
+PATCH {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/cover-letter
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "content": "Updated cover letter content..."
+}
+//refine cover letter
+###
+POST {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/cover-letter/refine
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "feedback": "Make it more concise and impactful",
+  "constraints": {
+    "max_words": 250
+  }
+}
+// revert cover letter
+###
+POST {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/cover-letter/revert
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "version": 1
+}
+// generate email
+###
+POST {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/email
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "tone": "professional",
+  "include_cover_letter": true
+}
+// update email manually
+###
+PATCH {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/email
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "subject": "Application for Backend Developer Role",
+  "body": "Dear Hiring Manager..."
+}
+
+// get match analysis
+###
+GET {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/match-analysis
+Authorization: Bearer {{accessToken}}
+
+# suggest bullet improvements
+###
+POST {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/resume/bullets/suggest
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "experienceIndex": 0,
+  "bulletIndex": 0
+}
+
+# update resume bullet
+###
+PATCH {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/resume/bullets
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "experienceIndex": 0,
+  "newDescription": "Led development of scalable REST APIs serving 10k+ daily users",
+  "action": "accept",
+  "originalContent": "Developed REST APIs",
+  "suggestedContent": "Led development of scalable REST APIs serving 10k+ daily users"
+}
+
+# generate pdf
+###
+POST {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/pdf
+Authorization: Bearer {{accessToken}}
+
+# preview pdf
+###
+GET {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/pdf/preview
+Authorization: Bearer {{accessToken}}
 
 ###
 DELETE {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f
 Authorization: Bearer {{accessToken}}
 
+// scrape and create job
 ###
-POST {{url}}/jobs
+POST {{url}}/jobs/scrape
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "title": "Web Developer",
-  "company":"Safaricom",
-  "location":"Nairobi,Westlands",
-  "raw_description":"raw description",
-  "job_embedding":[1],
-  "source_url":"https://www.example.net/",
-  "url_hash":"hash",
-  "structured_job_json":{
-    "title": "Web Developer",
-    "company":"Safaricom",
-    "location":"Nairobi,Westlands",
-    "seniority":"junior",
-    "mode":"onsite",
-    "job_type":"full_time",
-    "required_skills":["Html","react"],
-    "responsibilities":["Create web Pages","Maintain them"],
-    "application_method":"email"
+  "url": "https://www.example.net/job-posting"
+}
+
+//check duplicates
+###
+POST {{url}}/jobs/check-duplicate
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "url": "https://www.example.net/job-posting"
+}
+
+//search jobs
+###
+POST {{url}}/jobs/search
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "query": "developer",
+  "filters": {
+    "location": "Nairobi",
+    "role": "Backend"
   }
 }
 
@@ -273,39 +400,122 @@ Content-Type: application/json
 DELETE {{url}}/jobs/4afea712-fabc-45e0-98da-0618bfea2154
 Authorization: Bearer {{accessToken}}
 
+// replace entire profile
 ###
-POST {{url}}/master-profiles
-Content-Type: application/json
+PATCH {{url}}/master-profiles/c2f2cea3-fdbf-4898-b7a7-e825443e6309
 Authorization: Bearer {{accessToken}}
+Content-Type: application/json
 
 {
-  "userId": "c2f2cea3-fdbf-4898-b7a7-e825443e6309",
-  "version_number":1,
-  "resume_embedding":[1],
-  "structured_data_json":{
-    "summary": "Summary"
+  "structured_data_json": {
+    "summary": "Updated summary",
+    "skills": ["React", "NestJS"],
+    "experience": [],
+    "education": []
   }
 }
+
+//add skill
+###
+POST {{url}}/master-profile/c2f2cea3-fdbf-4898-b7a7-e825443e6309/skills
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "PostgreSQL"
+}
+
+// remove skill
+###
+DELETE {{url}}/master-profile/c2f2cea3-fdbf-4898-b7a7-e825443e6309/skills/PostgreSQL
+Authorization: Bearer {{accessToken}}
 
 ###
 GET {{url}}/master-profiles
 Authorization: Bearer {{accessToken}}
 
+//get by userid
 ###
-GET {{url}}/master-profiles/7081686f-e3a6-485c-a814-b52da1571250
+GET {{url}}/master-profiles/c2f2cea3-fdbf-4898-b7a7-e825443e6309
 Authorization: Bearer {{accessToken}}
 
+
+//update personal
 ###
-PATCH {{url}}/master-profiles/7081686f-e3a6-485c-a814-b52da1571250
+PATCH {{url}}/master-profiles/c2f2cea3-fdbf-4898-b7a7-e825443e6309/personal
 Authorization: Bearer {{accessToken}}
-Content-Type: application/json  
+Content-Type: application/json
 
 {
-  "version_number":2
+  "name": "John Doe",
+  "location": "Berlin"
 }
 
+//get skills
 ###
-DELETE {{url}}/master-profiles/7081686f-e3a6-485c-a814-b52da1571250 
+GET {{url}}/master-profiles/c2f2cea3-fdbf-4898-b7a7-e825443e6309/skills
+Authorization: Bearer {{accessToken}}
+
+//add Experience
+###
+POST {{url}}/master-profiles/{{userId}}/experience
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "company": "Google",
+  "job_title": "Software Engineer",
+  "start_date": "2022-01-01",
+  "end_date": "2023-01-01",
+  "description": "Worked on backend systems"
+}
+
+//update experience by index
+###
+PATCH {{url}}/master-profiles/{{userId}}/experience/0
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "job_title": "Senior Software Engineer"
+}
+
+//remove experience
+###
+DELETE {{url}}/master-profiles/{{userId}}/experience/0
+Authorization: Bearer {{accessToken}}
+
+// add education
+###
+POST {{url}}/master-profiles/{{userId}}/education
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "institution": "University of Nairobi",
+  "degree": "BSc Computer Science",
+  "start_date": "2018-01-01",
+  "end_date": "2022-01-01"
+}
+
+// update  education by index
+###
+PATCH {{url}}/master-profiles/{{userId}}/education/0
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "degree": "BSc Software Engineering"
+}
+
+//remove education
+###
+DELETE {{url}}/master-profiles/{{userId}}/education/0
+Authorization: Bearer {{accessToken}}
+
+// get version history
+###
+GET {{url}}/master-profiles/{{userId}}/version-history
 Authorization: Bearer {{accessToken}}
 
 ###
@@ -319,80 +529,129 @@ Authorization: Bearer {{accessToken}}
   "basicMatchScore":0.4
 }
 
+// delete profile by user id
 ###
-GET {{url}}/recommended-jobs
-Authorization: Bearer {{accessToken}}
-
-###
-GET {{url}}/recommended-jobs/adabf1cd-1968-4320-9c03-5bb358131798
-Authorization: Bearer {{accessToken}}
-
-###
-PATCH {{url}}/recommended-jobs/adabf1cd-1968-4320-9c03-5bb358131798
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json  
-
-{
-  "basicMatchScore":0.2
-}
-
-###
-DELETE {{url}}/recommended-jobs/adabf1cd-1968-4320-9c03-5bb358131798
+DELETE {{url}}/master-profiles/{{userId}}
 Authorization: Bearer {{accessToken}}
 
 
+//get all recommendations
 ###
-POST {{url}}/suggestion-feedbacks
+GET {{url}}/recommendations
+Authorization: Bearer {{accessToken}}
+
+//get recomendations for user
+###
+GET {{url}}/recommendations/user/adabf1cd-1968-4320-9c03-5bb358131798
+Authorization: Bearer {{accessToken}}
+
+//mark recomendations as processed
+###
+POST {{url}}/recommendations/user/adabf1cd-1968-4320-9c03-5bb358131798/job/JOB_ID_HERE/process
+Authorization: Bearer {{accessToken}}
+
+//delete recommendations 
+###
+DELETE {{url}}/recommendations/RECOMMENDATION_ID_HERE
+Authorization: Bearer {{accessToken}}
+
+
+###
+POST {{url}}/feedback/suggestion
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
   "userId": "c2f2cea3-fdbf-4898-b7a7-e825443e6309",
-  "contentType":"skill",
-  "action":"accept"
+  "applicationId": "beaab228-ab10-4552-b053-d99eeb03794f",
+  "contentType": "SKILL",
+  "originalContent": "Java",
+  "suggestedContent": "Advanced Java",
+  "action": "accept"
 }
 
+//get all feedback admin
 ###
-GET {{url}}/suggestion-feedbacks
+GET {{url}}/feedback
 Authorization: Bearer {{accessToken}}
 
+//get fedback summary for user
 ###
-GET {{url}}/suggestion-feedbacks/f3756632-5664-4b62-85b7-ba41acd8d0dc
+GET {{url}}/feedback/summary/c2f2cea3-fdbf-4898-b7a7-e825443e6309
 Authorization: Bearer {{accessToken}}
 
+//get all feedback for a user
 ###
-PATCH {{url}}/suggestion-feedbacks/f3756632-5664-4b62-85b7-ba41acd8d0dc
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json  
-
-{
-  "contentType":"email"
-}
-
-###
-DELETE {{url}}/suggestion-feedbacks/f3756632-5664-4b62-85b7-ba41acd8d0dc
+GET {{url}}/feedback/user/c2f2cea3-fdbf-4898-b7a7-e825443e6309
 Authorization: Bearer {{accessToken}}
 
+//get all feedback for an application
 ###
-POST {{url}}/user-documents
-Content-Type: application/json
+GET {{url}}/feedback/application/beaab228-ab10-4552-b053-d99eeb03794f
 Authorization: Bearer {{accessToken}}
 
-{
-  "userId": "c2f2cea3-fdbf-4898-b7a7-e825443e6309",
-  "name":"Resume",
-  "documentType":"resume",
-  "fileUrl":"https://www.example.net/",
-  "pageCount":2,
-  "fileSizeKb":50
-}
-
+// filtered by content
 ###
-GET {{url}}/user-documents
+GET {{url}}/feedback/application/beaab228-ab10-4552-b053-d99eeb03794f?contentType=EMAIL
 Authorization: Bearer {{accessToken}}
 
+//get one feedback record
 ###
-GET {{url}}/user-documents/4ffc923c-5e1b-4231-8128-ac8402e86b06
+GET {{url}}/feedback/f3756632-5664-4b62-85b7-ba41acd8d0dc
+Authorization: Bearer {{accessToken}}
+
+//upload resume
+###
+POST {{url}}/user-documents/upload/resume
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data
+
+userId=c145911f-a878-4c9a-9d9b-00adfb2c50b6
+file=@./resumes/resume.pdf
+
+
+//upload supporting docs
+###
+POST {{url}}/user-documents/upload/document
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data
+
+userId=c2f2cea3-fdbf-4898-b7a7-e825443e6309
+type=CERTIFICATION
+name=AWS Certificate
+certification_name=AWS Solutions Architect
+issuing_org=Amazon
+issue_date=2024-01-01
+expiry_date=2026-01-01
+file=@./certificate.pdf
+
+//upload profile photo
+###
+POST {{url}}/user-documents/upload/photo
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data
+
+userId=c2f2cea3-fdbf-4898-b7a7-e825443e6309
+image=@./photo.jpg
+
+//get all docs admin
+###
+GET {{url}}/user-documents/documents
+Authorization: Bearer {{accessToken}}
+
+//get single doc
+###
+GET {{url}}/user-documents/documents/file/4ffc923c-5e1b-4231-8128-ac8402e86b06
+Authorization: Bearer {{accessToken}}
+
+//get all docs one user
+###
+GET {{url}}/user-documents/documents/c2f2cea3-fdbf-4898-b7a7-e825443e6309
+Authorization: Bearer {{accessToken}}
+
+//get doc by type
+###
+GET {{url}}/user-documents/documents/c2f2cea3-fdbf-4898-b7a7-e825443e6309?type=CERTIFICATION
 Authorization: Bearer {{accessToken}}
 
 ###
@@ -405,7 +664,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE {{url}}/user-documents/4ffc923c-5e1b-4231-8128-ac8402e86b06
+DELETE {{url}}/user-documents/documents/file/4ffc923c-5e1b-4231-8128-ac8402e86b06
 Authorization: Bearer {{accessToken}}
 
 ###
@@ -426,12 +685,13 @@ Authorization: Bearer {{accessToken}}
 GET {{url}}/user-preferences
 Authorization: Bearer {{accessToken}}
 
+// get one by user id
 ###
-GET {{url}}/user-preferences/cff8805f-670d-44cb-a1ed-711be6baf2eb
+GET {{url}}/user-preferences/c2f2cea3-fdbf-4898-b7a7-e825443e6309
 Authorization: Bearer {{accessToken}}
 
 ###
-PATCH {{url}}/user-preferences/cff8805f-670d-44cb-a1ed-711be6baf2eb
+PATCH {{url}}/user-preferences/c2f2cea3-fdbf-4898-b7a7-e825443e6309
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json  
 
@@ -439,6 +699,7 @@ Content-Type: application/json
   "experienceLevel":"senior"
 }
 
+//delete by user id
 ###
-DELETE {{url}}/user-preferences/cff8805f-670d-44cb-a1ed-711be6baf2eb
+DELETE {{url}}/user-preferences/c2f2cea3-fdbf-4898-b7a7-e825443e6309
 Authorization: Bearer {{accessToken}}

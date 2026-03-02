@@ -6,10 +6,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Job } from './entities/job.entity';
 import { User } from 'src/users/entities/user.entity';
 import { RolesGuard } from 'src/auth/guards';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [DatabaseModule,TypeOrmModule.forFeature([Job,User])],
+  imports: [DatabaseModule,HttpModule,TypeOrmModule.forFeature([Job,User])],
   controllers: [JobsController],
   providers: [JobsService,RolesGuard],
+  exports: [JobsService],
 })
 export class JobsModule {}

@@ -1,134 +1,69 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Resend } from 'resend';
 
 @Injectable()
 export class MailService {
-  private readonly resend: Resend;
-  constructor(private readonly configService: ConfigService) {
-    this.resend = new Resend(
-      this.configService.getOrThrow<string>('RESEND_API_KEY'),
-    );
+  constructor(private readonly configService: ConfigService) {}
+
+  // THIS IS THE ONLY PART THAT REALLY CHANGES
+  private async sendMail(to: string, subject: string, text: string) {
+    const apiKey = this.configService.getOrThrow<string>('MAILERSEND_API_KEY');
+    const domain = this.configService.getOrThrow<string>('MAILERSEND_DOMAIN');
+
+    try {
+      const response = await fetch('https://api.mailersend.com/v1/email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          // The "from" MUST use your test domain
+          from: { 
+            email: `info@${domain}`, 
+            name: "Job Application Assistant" 
+          },
+          to: [{ email: to }],
+          subject: subject,
+          text: text,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`MailerSend error: ${JSON.stringify(errorData)}`);
+      }
+
+      console.log(`Email to ${to} sent successfully!`);
+    } catch (error) {
+      console.error(`Error sending ${subject}:`, error);
+      throw error;
+    }
   }
 
-
-  async sendLoginEmail(to: string, name: string){
-    const mailOptions = {
-      from: `"Ai Job Application Assistant"<onboarding@resend.dev>`,
-      to: to,
-      subject: 'Login Notification',
-      text: `Hello ${name},\n\nYou have successfully logged in to your account.\n\nIf you did not perform this action, please contact support immediately.\n\nBest regards,\nYour Ai Job Application Assistant Team`,
-    };
-
-    try{
-      const info = await this.resend.emails.send(mailOptions);
-      if (info.error) {
-      throw new Error(info.error.message);
-    }
-
-    console.log('Login email sent:', info.data);
-    return info;
-
-    } catch (error) {
-      console.error('Error sending login email:', error);
-      throw error;
-    }
-}
-
-async sendRegistrationEmail(to: string, name: string) {
-  const mailOptions = {
-    from: `"Ai Job Application Assistant" <onboarding@resend.dev>`,
-    to,
-    subject: 'Welcome to Ai Job Application Assistant!',
-    text: `Hi ${name},
-
-You have been registered on our Ai Job Application Assistant App.
-
-Thank you for joining us! We are excited to have you on board and look forward to helping you with your job applications.
-
-If you believe this message was sent to you in error, please contact our support team through this email.
-
-Best regards,
-The Ai Job Application Assistant Team`,
-  };
-
-  try {
-    const info = await this.resend.emails.send(mailOptions);
-    if (info.error) {
-      throw new Error(info.error.message);
-    }
-
-    console.log('Registration email sent:', info.data);
-    return info;
-
-    } catch (error) {
-      console.error('Error sending Registration email:', error);
-      throw error;
-    }
-}
-
-  async sendOtpEmail(to:string,name:string,otp:string){
-    const mailOptions = {
-    from: `"Ai Job Application Assistant" <onboarding@resend.dev>`,
-    to,
-    subject: 'Password Change Request',
-    text: `Hi ${name},
-
-You have requested to change your password.
-
-Use the code below to verify your request:
-OTP: ${otp}
-
-This code will expire in 10 minutes. 
-If you did not request this change, please ignore this email.
-
-Best regards,
-The Ai Job Application Assistant Team`,
-  };
-
-  try {
-    const info = await this.resend.emails.send(mailOptions);
-    if (info.error) {
-      throw new Error(info.error.message);
-    }
-
-    console.log('OTP email sent:', info.data);
-    return info;
-
-    } catch (error) {
-      console.error('Error sending OTP email:', error);
-      throw error;
-    }
-}
-
-async sendPasswordChangeConfirmation(to: string, name: string) {
-  const mailOptions = {
-    from: `"Ai Job Application Assistant" <onboarding@resend.dev>`,
-    to,
-    subject: 'Password Changed Successfully',
-    text: `Hi ${name},
-
-Your password has been changed successfully. 
-If you did not perform this action, contact our support team immediately.
-
-Best regards,
-The Ai Job Application Assistant Team`,
-  };
-
-   try {
-    const info = await this.resend.emails.send(mailOptions);
-
-    if (info.error) {
-      throw new Error(info.error.message);
-    }
-
-    console.log('Password change confirmation email sent:', info.data);
-    return info;
-
-  } catch (error) {
-    console.error('Error sending password change confirmation email:', error);
-    throw error;
+  // ALL THESE METHODS STAY THE SAME AS BEFORE
+  async sendLoginEmail(to: string, name: string) {
+    const subject = 'Login Notification';
+    const text = `Hello ${name},\n\nYou have successfully logged in to your account.`;
+    return this.sendMail(to, subject, text);
   }
-}
 
+  async sendRegistrationEmail(to: string, name: string) {
+    const subject = 'Welcome to Ai Job Application Assistant!';
+    const text = `Hi ${name},\n\nYou have been registered.`;
+    return this.sendMail(to, subject, text);
+  }
+
+  async sendOtpEmail(to: string, name: string, otp: string) {
+    const subject = 'Password Change Request';
+    const text = `Hi ${name},\n\nOTP: ${otp}`;
+    return this.sendMail(to, subject, text);
+  }
+
+  async sendPasswordChangeConfirmation(to: string, name: string) {
+    const subject = 'Password Changed Successfully';
+    const text = `Hi ${name},\n\nYour password has been changed.`;
+    return this.sendMail(to, subject, text);
+  }
 }

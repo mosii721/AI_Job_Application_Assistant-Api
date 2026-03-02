@@ -13,5 +13,6 @@ import { RolesGuard } from 'src/auth/guards';
   imports: [DatabaseModule,TypeOrmModule.forFeature([ApplicationDocument,JobApplication,UserDocument,User])],
   controllers: [ApplicationDocumentsController],
   providers: [ApplicationDocumentsService,RolesGuard],
+  exports:[ApplicationDocumentsService],
 })
 export class ApplicationDocumentsModule {}

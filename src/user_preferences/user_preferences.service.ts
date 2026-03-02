@@ -38,15 +38,23 @@ export class UserPreferencesService {
     return this.userPreferenceRepository.find({relations:['user']});
   }
 
-  async findOne(id: string) {
-    return await this.userPreferenceRepository.findOne({where: {id}, relations:['user']});
+  async findByUserId(userId: string) {
+    const preference = await this.userPreferenceRepository.findOne({
+      where: { userId },
+      relations: ['user'],
+    });
+    if (!preference) {
+      throw new NotFoundException(`Preferences for user ${userId} not found`);
+    }
+    return preference;
   }
 
   async update(id: string, updateUserPreferenceDto: UpdateUserPreferenceDto) {
     return await this.userPreferenceRepository.update(id, updateUserPreferenceDto);
   }
 
-  async remove(id: string) {
-    return await this.userPreferenceRepository.delete(id);
-  }
+  async removeByUserId(userId: string) {
+  const preference = await this.findByUserId(userId);
+  return await this.userPreferenceRepository.delete(preference.id);
+}
 }

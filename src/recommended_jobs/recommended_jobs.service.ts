@@ -1,54 +1,232 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateRecommendedJobDto } from './dto/create-recommended_job.dto';
-import { UpdateRecommendedJobDto } from './dto/update-recommended_job.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RecommendedJob } from './entities/recommended_job.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Job } from 'src/jobs/entities/job.entity';
+import { UserPreference } from 'src/user_preferences/entities/user_preference.entity';
+import { JobsService } from 'src/jobs/jobs.service';
+import { HttpService } from '@nestjs/axios';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { firstValueFrom } from 'rxjs';
+import * as puppeteer from 'puppeteer';
 
 @Injectable()
 export class RecommendedJobsService {
   constructor(
-    @InjectRepository(RecommendedJob) private readonly recommendedJobRepository: Repository<RecommendedJob>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Job) private readonly jobRepository: Repository<Job>
+    @InjectRepository(RecommendedJob) 
+    private readonly recommendedJobRepository: Repository<RecommendedJob>,
+    @InjectRepository(User) 
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Job) 
+    private readonly jobRepository: Repository<Job>,
+    @InjectRepository(UserPreference)
+    private readonly userPreferenceRepository: Repository<UserPreference>,
+    private readonly jobsService: JobsService,
+    private readonly httpService: HttpService,
   ) {}
 
-  async create(createRecommendedJobDto: CreateRecommendedJobDto) {
-    const existUser = await this.userRepository.findOneBy({ id: createRecommendedJobDto.userId });
-    const existJob = await this.jobRepository.findOneBy({ id: createRecommendedJobDto.jobId });
+  // CRON JOB - runs every 6 hours
+  @Cron(CronExpression.EVERY_6_HOURS)
+  async fetchAndRecommendJobs() {
+    console.log('Running recommendation cron job...');
 
-    if(!existUser){
-      throw new NotFoundException(`User with id ${createRecommendedJobDto.userId} not found`);
-    } 
-    if(!existJob){
-      throw new NotFoundException(`Job with id ${createRecommendedJobDto.jobId} not found`);
+    // 1. get all active users with their preferences
+    const users = await this.userRepository.find({
+      where: { active: true },
+      relations: ['preferences', 'masterProfile'],
+    });
+
+    for (const user of users) {
+      if (!user.preferences) continue;
+
+      try {
+        // 2. fetch jobs from BrighterMonday and Remotive
+        const [brighterMondayJobs, remotiveJobs] = await Promise.all([
+          this.fetchFromBrighterMonday(user.preferences),
+          this.fetchFromRemotive(user.preferences),
+        ]);
+
+        const allFetchedJobs = [...brighterMondayJobs, ...remotiveJobs];
+
+        for (const fetchedJob of allFetchedJobs) {
+          // 3. check if job already exists using url hash
+          const duplicate = await this.jobsService.checkDuplicate(fetchedJob.url);
+
+          let job: Job | null = null;
+
+          if (duplicate.exists && duplicate.job_id) {
+            const foundJob = await this.jobRepository.findOneBy({ id: duplicate.job_id });
+            if (!foundJob) continue;
+            job = foundJob;
+          } else {
+            const result = await this.jobsService.scrapeAndCreate(fetchedJob.url);
+            job = result.job;
+          }
+
+          if (!job) continue;
+
+          // 4. check if already recommended to this user
+          const alreadyRecommended = await this.recommendedJobRepository.findOne({
+            where: { userId: user.id, jobId: job.id },
+          });
+          if (alreadyRecommended) continue;
+
+          // 5. call AI for basic match score using embeddings
+          const matchResponse = await firstValueFrom(
+            this.httpService.post(`${process.env.AI_SERVICE_URL}/compute-similarity`, {
+              resume_embedding: user.masterProfile?.resume_embedding,
+              job_embedding: job.job_embedding,
+            })
+          );
+          const basicMatchScore = matchResponse.data.similarity_score;
+
+          // 6. save recommendation
+          const recommendation = this.recommendedJobRepository.create({
+            userId: user.id,
+            jobId: job.id,
+            basicMatchScore,
+            isProcessed: false,
+            sourceApi: fetchedJob.source,
+          });
+          await this.recommendedJobRepository.save(recommendation);
+        }
+      } catch (error) {
+        console.error(`Failed to process recommendations for user ${user.id}:`, error);
+        continue;
+      }
     }
 
-    const newRecommendedJob = this.recommendedJobRepository.create({
-      user: existUser,
-      job: existJob,
-      basicMatchScore: createRecommendedJobDto.basicMatchScore,
-      isProcessed: createRecommendedJobDto.isProcessed  || false,
-      sourceApi: createRecommendedJobDto.sourceApi,
-    })
-    return this.recommendedJobRepository.save(newRecommendedJob);
+    console.log('Recommendation cron job completed');
   }
 
+  // FETCH FROM BRIGHTERMONDAY - scrapes job listing page using Puppeteer
+  private async fetchFromBrighterMonday(preferences: UserPreference): Promise<{ url: string; source: string }[]> {
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+
+    try {
+      const role = preferences.preferredRoles[0] ?? 'developer';
+      const location = preferences.locationPreference[0] ?? 'nairobi';
+
+      const searchUrl = `https://www.brightermonday.co.ke/jobs?q=${encodeURIComponent(role)}&l=${encodeURIComponent(location)}`;
+
+      const page = await browser.newPage();
+
+      // set user agent to avoid bot detection
+      await page.setUserAgent(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+      );
+
+      await page.goto(searchUrl, { 
+        waitUntil: 'networkidle2',
+        timeout: 30000,
+      });
+
+      // extract individual job URLs from the listing page
+      const jobUrls = await page.evaluate(() => {
+        const links = document.querySelectorAll('a[href*="/jobs/"]');
+        const urls: string[] = [];
+        links.forEach(link => {
+          const href = (link as HTMLAnchorElement).href;
+          // filter to only individual job pages not category pages
+          if (href.includes('/jobs/') && !href.includes('?') && !urls.includes(href)) {
+            urls.push(href);
+          }
+        });
+        return urls.slice(0, 10); // limit to 10 jobs per fetch
+      });
+
+      return jobUrls.map(url => ({
+        url,
+        source: 'brightermonday',
+      }));
+    } catch (error) {
+      console.error('BrighterMonday fetch failed:', error);
+      return [];
+    } finally {
+      await browser.close();
+    }
+  }
+
+  // FETCH FROM REMOTIVE - API call for remote jobs
+  private async fetchFromRemotive(preferences: UserPreference): Promise<{ url: string; source: string }[]> {
+    try {
+      const role = preferences.preferredRoles[0] ?? 'software developer';
+
+      const response = await firstValueFrom(
+        this.httpService.get(`${process.env.REMOTIVE_BASE_URL}`, {
+          params: {
+            search: role,
+            limit: 10,
+          },
+        })
+      );
+
+      return response.data.jobs.map((job: any) => ({
+        url: job.url,
+        source: 'remotive',
+      }));
+    } catch (error) {
+      console.error('Remotive fetch failed:', error);
+      return [];
+    }
+  }
+
+  // GET RECOMMENDATIONS FOR USER
+  async findByUserId(userId: string) {
+    const user = await this.userRepository.findOneBy({ id: userId });
+    if (!user) {
+      throw new NotFoundException(`User with id ${userId} not found`);
+    }
+
+    return await this.recommendedJobRepository.find({
+      where: { userId },
+      relations: ['job'],
+      order: { basicMatchScore: 'DESC' },
+    });
+  }
+
+  // MARK AS PROCESSED
+  async markAsProcessed(userId: string, jobId: string) {
+    const recommendation = await this.recommendedJobRepository.findOne({
+      where: { userId, jobId },
+      relations: ['job'],
+    });
+
+    if (!recommendation) {
+      throw new NotFoundException(`Recommendation not found`);
+    }
+
+    await this.recommendedJobRepository.update(recommendation.id, {
+      isProcessed: true,
+    });
+
+    return { processed: true, jobId };
+  }
+
+  // GET ALL - admin only
   async findAll() {
-    return this.recommendedJobRepository.find({relations:['user','job']});
+    return this.recommendedJobRepository.find({ relations: ['user', 'job'] });
   }
 
+  // GET ONE
   async findOne(id: string) {
-    return await this.recommendedJobRepository.findOne({where: {id}, relations:['user','job']});
+    const recommendation = await this.recommendedJobRepository.findOne({
+      where: { id },
+      relations: ['user', 'job'],
+    });
+    if (!recommendation) {
+      throw new NotFoundException(`Recommendation with id ${id} not found`);
+    }
+    return recommendation;
   }
 
-  async update(id: string, updateRecommendedJobDto: UpdateRecommendedJobDto) {
-    return await this.recommendedJobRepository.update(id, updateRecommendedJobDto);
-  }
-
+  // DELETE
   async remove(id: string) {
+    await this.findOne(id);
     return await this.recommendedJobRepository.delete(id);
   }
 }

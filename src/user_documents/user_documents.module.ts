@@ -6,9 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserDocument } from './entities/user_document.entity';
 import { User } from 'src/users/entities/user.entity';
 import { RolesGuard } from 'src/auth/guards';
+import { MasterProfilesModule } from 'src/master_profiles/master_profiles.module';
 
 @Module({
-  imports: [DatabaseModule,TypeOrmModule.forFeature([UserDocument,User])],
+  imports: [DatabaseModule,MasterProfilesModule,TypeOrmModule.forFeature([UserDocument,User])],
   controllers: [UserDocumentsController],
   providers: [UserDocumentsService,RolesGuard],
 })

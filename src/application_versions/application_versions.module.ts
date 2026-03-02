@@ -12,5 +12,6 @@ import { RolesGuard } from 'src/auth/guards';
   imports:[DatabaseModule,TypeOrmModule.forFeature([ApplicationVersion,JobApplication,User])],
   controllers: [ApplicationVersionsController],
   providers: [ApplicationVersionsService,RolesGuard],
+  exports:[ApplicationVersionsService],
 })
 export class ApplicationVersionsModule {}

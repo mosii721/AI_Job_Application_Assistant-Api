@@ -1,34 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApplicationVersionsService } from './application_versions.service';
-import { CreateApplicationVersionDto } from './dto/create-application_version.dto';
-import { UpdateApplicationVersionDto } from './dto/update-application_version.dto';
+import { ContentType } from './entities/application_version.entity';
 
-@Controller('application-versions')
+@Controller('applications/:appId/versions')
 export class ApplicationVersionsController {
   constructor(private readonly applicationVersionsService: ApplicationVersionsService) {}
 
-  @Post()
-  create(@Body() createApplicationVersionDto: CreateApplicationVersionDto) {
-    return this.applicationVersionsService.create(createApplicationVersionDto);
-  }
-
-  @Get()
+  @Get('all')
   findAll() {
     return this.applicationVersionsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.applicationVersionsService.findOne(id);
+  @Get()
+  findByApplicationId(
+    @Param('appId') appId: string,
+    @Query('contentType') contentType?: ContentType,
+  ) {
+    return this.applicationVersionsService.findByApplicationId(appId, contentType);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateApplicationVersionDto: UpdateApplicationVersionDto) {
-    return this.applicationVersionsService.update(id, updateApplicationVersionDto);
+  @Get('cover-letter')
+  findCoverLetterVersions(@Param('appId') appId: string) {
+    return this.applicationVersionsService.findCoverLetterVersions(appId);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.applicationVersionsService.remove(id);
+  @Get('email')
+  findEmailVersions(@Param('appId') appId: string) {
+    return this.applicationVersionsService.findEmailVersions(appId);
+  }
+
+  @Get('resume-bullet')
+  findResumeBulletVersions(@Param('appId') appId: string) {
+    return this.applicationVersionsService.findResumeBulletVersions(appId);
+  }
+
+  @Get(':versionId')
+  findOne(@Param('versionId') versionId: string) {
+    return this.applicationVersionsService.findOne(versionId);
   }
 }

@@ -19,6 +19,7 @@ import { ApplicationTimelinesModule } from './application_timelines/application_
 import { UserPreferencesModule } from './user_preferences/user_preferences.module';
 import { RecommendedJobsModule } from './recommended_jobs/recommended_jobs.module';
 import { SuggestionFeedbacksModule } from './suggestion_feedbacks/suggestion_feedbacks.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -31,6 +32,7 @@ import { SuggestionFeedbacksModule } from './suggestion_feedbacks/suggestion_fee
     limit: 100, // Maximum number of requests within the ttl
     }]
   }),
+  ScheduleModule.forRoot(),
     UsersModule,
     MasterProfilesModule,  
     DatabaseModule, 

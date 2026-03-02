@@ -12,5 +12,6 @@ import { RolesGuard } from 'src/auth/guards';
   imports: [DatabaseModule,TypeOrmModule.forFeature([SuggestionFeedback,User,JobApplication])],
   controllers: [SuggestionFeedbacksController],
   providers: [SuggestionFeedbacksService,RolesGuard],
+  exports:[SuggestionFeedbacksService],
 })
 export class SuggestionFeedbacksModule {}

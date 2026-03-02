@@ -1,32 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param, Delete } from '@nestjs/common';
 import { RecommendedJobsService } from './recommended_jobs.service';
-import { CreateRecommendedJobDto } from './dto/create-recommended_job.dto';
-import { UpdateRecommendedJobDto } from './dto/update-recommended_job.dto';
 
-@Controller('recommended-jobs')
+@Controller('recommendations')
 export class RecommendedJobsController {
   constructor(private readonly recommendedJobsService: RecommendedJobsService) {}
 
-  @Post()
-  create(@Body() createRecommendedJobDto: CreateRecommendedJobDto) {
-    return this.recommendedJobsService.create(createRecommendedJobDto);
-  }
-
+  // GET ALL - admin only
   @Get()
   findAll() {
     return this.recommendedJobsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.recommendedJobsService.findOne(id);
+  // GET RECOMMENDATIONS FOR USER
+  @Get(':userId')
+  findByUserId(@Param('userId') userId: string) {
+    return this.recommendedJobsService.findByUserId(userId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRecommendedJobDto: UpdateRecommendedJobDto) {
-    return this.recommendedJobsService.update(id, updateRecommendedJobDto);
+  // MARK AS PROCESSED
+  @Post('process/:userId/:jobId')
+  markAsProcessed(
+    @Param('userId') userId: string,
+    @Param('jobId') jobId: string,
+  ) {
+    return this.recommendedJobsService.markAsProcessed(userId, jobId);
   }
 
+  // DELETE
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.recommendedJobsService.remove(id);

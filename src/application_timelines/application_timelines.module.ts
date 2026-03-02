@@ -12,5 +12,6 @@ import { RolesGuard } from 'src/auth/guards';
   imports: [DatabaseModule,TypeOrmModule.forFeature([ApplicationTimeline,JobApplication,User])],
   controllers: [ApplicationTimelinesController],
   providers: [ApplicationTimelinesService,RolesGuard],
+  exports:[ApplicationTimelinesService],
 })
 export class ApplicationTimelinesModule {}

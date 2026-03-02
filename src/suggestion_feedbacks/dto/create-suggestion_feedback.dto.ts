@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from "class-validator";
-import { ContentType, SuggestionAction } from "../entities/suggestion_feedback.entity";
+import { SuggestionAction, SuggestionContentType } from "../entities/suggestion_feedback.entity";
 
 export class CreateSuggestionFeedbackDto {
     @IsString()
@@ -9,8 +9,8 @@ export class CreateSuggestionFeedbackDto {
     @IsOptional()
     applicationId?: string;      // optional per API spec
 
-    @IsEnum(ContentType)
-    contentType: ContentType;
+    @IsEnum(SuggestionContentType)
+    contentType: SuggestionContentType;
 
     @IsString()
     @IsOptional()

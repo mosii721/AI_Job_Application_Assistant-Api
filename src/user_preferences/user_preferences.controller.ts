@@ -17,9 +17,9 @@ export class UserPreferencesController {
     return this.userPreferencesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userPreferencesService.findOne(id);
+  @Get(':userId')
+  findByUserId(@Param('userId') userId: string) {
+    return this.userPreferencesService.findByUserId(userId);
   }
 
   @Patch(':id')
@@ -27,8 +27,8 @@ export class UserPreferencesController {
     return this.userPreferencesService.update(id, updateUserPreferenceDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userPreferencesService.remove(id);
-  }
+  @Delete(':userId')
+  remove(@Param('userId') userId: string) {
+  return this.userPreferencesService.removeByUserId(userId);
+}
 }

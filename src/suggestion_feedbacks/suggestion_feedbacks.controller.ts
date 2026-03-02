@@ -1,34 +1,48 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { SuggestionFeedbacksService } from './suggestion_feedbacks.service';
 import { CreateSuggestionFeedbackDto } from './dto/create-suggestion_feedback.dto';
-import { UpdateSuggestionFeedbackDto } from './dto/update-suggestion_feedback.dto';
+import { SuggestionContentType } from './entities/suggestion_feedback.entity';
 
-@Controller('suggestion-feedbacks')
+@Controller('feedback')
 export class SuggestionFeedbacksController {
   constructor(private readonly suggestionFeedbacksService: SuggestionFeedbacksService) {}
 
-  @Post()
+  // CREATE - user accepts/rejects AI suggestion
+  @Post('suggestion')
   create(@Body() createSuggestionFeedbackDto: CreateSuggestionFeedbackDto) {
     return this.suggestionFeedbacksService.create(createSuggestionFeedbackDto);
   }
 
+  // GET ALL - admin only
   @Get()
   findAll() {
     return this.suggestionFeedbacksService.findAll();
   }
 
+  // GET FEEDBACK SUMMARY FOR USER - used by AI personalization
+  @Get('summary/:userId')
+  getFeedbackSummary(@Param('userId') userId: string) {
+    return this.suggestionFeedbacksService.getFeedbackSummary(userId);
+  }
+
+  // GET ALL FEEDBACK FOR A USER
+  @Get('user/:userId')
+  findByUserId(@Param('userId') userId: string) {
+    return this.suggestionFeedbacksService.findByUserId(userId);
+  }
+
+  // GET ALL FEEDBACK FOR AN APPLICATION
+  @Get('application/:applicationId')
+  findByApplicationId(
+    @Param('applicationId') applicationId: string,
+    @Query('contentType') contentType?: SuggestionContentType,
+  ) {
+    return this.suggestionFeedbacksService.findByApplicationId(applicationId, contentType);
+  }
+
+  // GET ONE
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.suggestionFeedbacksService.findOne(id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSuggestionFeedbackDto: UpdateSuggestionFeedbackDto) {
-    return this.suggestionFeedbacksService.update(id, updateSuggestionFeedbackDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.suggestionFeedbacksService.remove(id);
   }
 }

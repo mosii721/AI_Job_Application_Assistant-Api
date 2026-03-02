@@ -11,5 +11,6 @@ import { RolesGuard } from 'src/auth/guards';
   imports: [DatabaseModule,TypeOrmModule.forFeature([UserPreference,User])],
   controllers: [UserPreferencesController],
   providers: [UserPreferencesService,RolesGuard],
+  exports:[UserPreferencesService],
 })
 export class UserPreferencesModule {}

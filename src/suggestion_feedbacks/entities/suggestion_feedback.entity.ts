@@ -2,7 +2,7 @@ import { JobApplication } from "src/job_applications/entities/job_application.en
 import { User } from "src/users/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Relation } from "typeorm";
 
-export enum ContentType {
+export enum SuggestionContentType {
     BULLET = 'bullet',
     SKILL = 'skill',
     COVER_LETTER = 'cover_letter',
@@ -26,8 +26,8 @@ export class SuggestionFeedback {
     @Column({nullable: true})
     applicationId?: string;      // optional per API spec
 
-    @Column({type: 'enum', enum: ContentType})
-    contentType: ContentType;
+    @Column({type: 'enum', enum: SuggestionContentType})
+    contentType: SuggestionContentType;
 
     @Column({type: 'text',nullable: true})
     originalContent?: string;    // optional per API spec
