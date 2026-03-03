@@ -51,12 +51,13 @@ export class MasterProfilesService {
 
   // 2. call AI to generate embedding for the resume
   const embeddingResponse = await firstValueFrom(
-    this.httpService.post(`${process.env.AI_SERVICE_URL}/generate-embedding`, {
-      text: rawText,
-      type: 'resume',
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/embeddings/profile`, {
+      profile_id: profileId,
+      sections: ['skills', 'experience', 'education', 'summary'],
+      data: structuredData, // pass the parsed resume data
     })
   );
-  const embedding = embeddingResponse.data.embedding;
+  const embedding = embeddingResponse.data.embeddings; // note: embeddings not embedding
 
   if (existingProfile) {
     // update existing profile and increment version
@@ -115,46 +116,47 @@ export class MasterProfilesService {
 
   // ADD SKILL - POST /master-profile/:userId/skills
   async addSkill(userId: string, skill: string) {
-    const profile = await this.findByUserId(userId);
+  const profile = await this.findByUserId(userId);
+  const currentSkills = profile.structured_data_json?.skills ?? [];
 
-    const currentSkills = profile.structured_data_json?.skills ?? [];
-
-    if (currentSkills.some(s => s.toLowerCase() === skill.toLowerCase())) {
-      throw new ConflictException(`Skill ${skill} already exists`);
-    }
-
-    const updatedData = {
-      ...profile.structured_data_json,
-      skills: [...currentSkills, skill],
-    };
-
-    await this.masterProfileRepository.update(profile.id, {
-      structured_data_json: updatedData,
-      version_number: profile.version_number + 1,
-    });
-
-    return this.getSkills(userId);
+  if (currentSkills.some((s: any) => s.name?.toLowerCase() === skill.toLowerCase())) {
+    throw new ConflictException(`Skill ${skill} already exists`);
   }
+
+  const newSkill = { name: skill, category: null, proficiency: null, years: null };
+
+  const updatedData = {
+    ...profile.structured_data_json,
+    skills: [...currentSkills, newSkill],
+  };
+
+  await this.masterProfileRepository.update(profile.id, {
+    structured_data_json: updatedData,
+    version_number: profile.version_number + 1,
+  });
+
+  return this.getSkills(userId);
+}
 
   // REMOVE SKILL - DELETE /master-profile/:userId/skills/:skillName
   async removeSkill(userId: string, skillName: string) {
-    const profile = await this.findByUserId(userId);
+  const profile = await this.findByUserId(userId);
 
-    const updatedSkills = (profile.structured_data_json.skills ?? [])
-      .filter(skill => skill !== skillName);
+  const updatedSkills = (profile.structured_data_json.skills ?? [])
+    .filter((skill: any) => skill.name !== skillName);
 
-    const updatedData = {
-      ...profile.structured_data_json,
-      skills: updatedSkills,
-    };
+  const updatedData = {
+    ...profile.structured_data_json,
+    skills: updatedSkills,
+  };
 
-    await this.masterProfileRepository.update(profile.id, {
-      structured_data_json: updatedData,
-      version_number: profile.version_number + 1,
-    });
+  await this.masterProfileRepository.update(profile.id, {
+    structured_data_json: updatedData,
+    version_number: profile.version_number + 1,
+  });
 
-    return this.getSkills(userId);
-  }
+  return this.getSkills(userId);
+}
 
   // ADD EXPERIENCE - POST /master-profile/:userId/experience
   async addExperience(userId: string, experience: {
@@ -316,12 +318,13 @@ async replaceProfile(userId: string, updateMasterProfileDto: UpdateMasterProfile
   const profile = await this.findByUserId(userId);
 
   const embeddingResponse = await firstValueFrom(
-    this.httpService.post(`${process.env.AI_SERVICE_URL}/generate-embedding`, {
-      text: JSON.stringify(updateMasterProfileDto.structured_data_json),
-      type: 'resume',
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/embeddings/profile`, {
+      profile_id: profile.id,
+      sections: ['skills', 'experience', 'education', 'summary'],
+      data: updateMasterProfileDto.structured_data_json,
     })
   );
-  const embedding = embeddingResponse.data.embedding;
+  const embedding = embeddingResponse.data.embeddings;
 
   await this.masterProfileRepository.update(profile.id, {
     structured_data_json: updateMasterProfileDto.structured_data_json,

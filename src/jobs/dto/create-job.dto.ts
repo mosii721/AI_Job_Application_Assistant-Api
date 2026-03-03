@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsArray, IsEnum, IsNumber, IsOptional, IsString, IsUrl, ValidateNested } from "class-validator";
+import { IsArray, IsEnum, IsNumber, IsObject, IsOptional, IsString, IsUrl, ValidateNested } from "class-validator";
 import { ApplicationMethod, JobType, Seniority, WorkMode } from "../entities/job.entity";
 
 
@@ -64,9 +64,8 @@ export class CreateJobDto {
     @Type(() => JobDto)
     structured_job_json: JobDto; // AI-structured version of raw_description
 
-    @IsArray()
-    @IsNumber({}, { each: true })
-    job_embedding: number[];
+    @IsObject()
+    job_embedding: Record<string, number[]>;
 
     @IsUrl()
     source_url: string;

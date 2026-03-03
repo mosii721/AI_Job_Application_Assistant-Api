@@ -1,9 +1,11 @@
 @url1 = https://ai-job-application-assistant-api.onrender.com/api/v1
 @url = http://localhost:5000/api/v1
 
-@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcyNDQwMTc0LCJleHAiOjE3NzI0NDI4NzR9.2PWsnznC_RbIxPuJlW62vk0RCkAqexug9A72cAYq0b8
+@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcyNTI5MDAyLCJleHAiOjE3NzI1MzE3MDJ9.Ajl9Ok0MKHdJeuTirrzxMWAXYXeStS43UQT-NI7Gix8
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
 idUser = c145911f-a878-4c9a-9d9b-00adfb2c50b6
+jobid = ef315272-8fb1-4964-9a1a-aa617b58c259
+job aplication id = 4c112fe5-bec3-4e0d-9676-c5cd5278703e
 
 ###
 //admin
@@ -133,7 +135,7 @@ Authorization: Bearer {{accessToken}}
 
 //get full timeline for application
 ###
-GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/timeline
+GET {{url}}/applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/timeline
 Authorization: Bearer {{accessToken}}
 
 //get timeline filtered by event type satatus_change, note_added
@@ -160,7 +162,7 @@ Authorization: Bearer {{accessToken}}
 
 // get all versions for applications id on url
 ###
-GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/versions
+GET {{url}}/applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/versions
 Authorization: Bearer {{accessToken}}
 
 //get versions filtered by content email,cover_letter and resume_bullet
@@ -190,8 +192,8 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "userId": "c2f2cea3-fdbf-4898-b7a7-e825443e6309",
-  "jobId": "4afea712-fabc-45e0-98da-0618bfea2154"
+  "userId": "c145911f-a878-4c9a-9d9b-00adfb2c50b6",
+  "jobId": "ef315272-8fb1-4964-9a1a-aa617b58c259"
 }
 
 ###
@@ -237,18 +239,19 @@ Content-Type: application/json
 }
 //finalize
 ###
-POST {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/finalize
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/finalize
 Authorization: Bearer {{accessToken}}
+
 // generate cover letter ai
 ###
-POST {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/cover-letter
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/cover-letter
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
   "tone": "professional",
   "length": "medium",
-  "emphasize": ["leadership", "backend experience"]
+  "emphasize": ["leadership", "full stack web development"]
 }
 //update cover letter content manually
 ###
@@ -282,7 +285,7 @@ Content-Type: application/json
 }
 // generate email
 ###
-POST {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/email
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/email
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -333,12 +336,12 @@ Content-Type: application/json
 
 # generate pdf
 ###
-POST {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/pdf
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/pdf
 Authorization: Bearer {{accessToken}}
 
 # preview pdf
 ###
-GET {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/pdf/preview
+GET {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/pdf/preview
 Authorization: Bearer {{accessToken}}
 
 ###
@@ -352,7 +355,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "url": "https://www.example.net/job-posting"
+  "url": "https://remoteok.com/remote-jobs/remote-senior-fullstack-developer-kodify-media-group-1130526"
 }
 
 //check duplicates
@@ -436,7 +439,7 @@ Authorization: Bearer {{accessToken}}
 
 //get by userid
 ###
-GET {{url}}/master-profiles/c2f2cea3-fdbf-4898-b7a7-e825443e6309
+GET {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6
 Authorization: Bearer {{accessToken}}
 
 
@@ -673,7 +676,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "userId": "c2f2cea3-fdbf-4898-b7a7-e825443e6309",
+  "userId": "c145911f-a878-4c9a-9d9b-00adfb2c50b6",
   "preferredRoles":["Backend Developer", "Full Stack Developer"],
   "industries":["Technology", "FinTech"],
   "experienceLevel":"junior",

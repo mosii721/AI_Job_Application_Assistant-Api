@@ -64,10 +64,13 @@ export class JobApplicationsService {
 
     // 4. call AI service to compute match scores and analysis
     const matchResponse = await firstValueFrom(
-      
-      this.httpService.post(`${process.env.AI_SERVICE_URL}/generate-match-analysis`, {
-        resume: masterProfile.structured_data_json,
+      this.httpService.post(`${process.env.AI_SERVICE_URL}/scoring/match`, {
+        user_id: userId,
+        job_id: jobId,
+        profile: masterProfile.structured_data_json,
         job: job.structured_job_json,
+        profile_embeddings: masterProfile.resume_embedding,
+        job_embeddings: job.job_embedding,
       })
     );
     const matchData = matchResponse.data;
@@ -78,11 +81,11 @@ export class JobApplicationsService {
       jobId,
       profileVersionUsed: masterProfile.version_number,
       overallMatchScore: matchData.overall_score,
-      skillScore: matchData.skill_score,
-      experienceScore: matchData.experience_score,
-      educationScore: matchData.education_score,
-      matchAnalysisJson: matchData.analysis,
-      tailoredResumeJson: masterProfile.structured_data_json, // copy master profile
+      skillScore: matchData.breakdown?.skills ?? 0,
+      experienceScore: matchData.breakdown?.experience ?? 0,
+      educationScore: matchData.breakdown?.seniority ?? 0,  // AI has no education score, using seniority
+      matchAnalysisJson: matchData,
+      tailoredResumeJson: masterProfile.structured_data_json,
       status: ApplicationStatus.DRAFT,
     });
 
@@ -227,15 +230,16 @@ async generateCoverLetter(id: string, preferences: { tone?: string; length?: str
 
   // call AI service
   const response = await firstValueFrom(
-    this.httpService.post(`${process.env.AI_SERVICE_URL}/generate-cover-letter`, {
-      resume: masterProfile.structured_data_json,
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/cover-letter/generate`, {
+      user_id: application.userId,
+      job_id: application.jobId,
+      profile: masterProfile.structured_data_json,
       job: job.structured_job_json,
-      match_analysis: application.matchAnalysisJson,
       preferences,
     })
   );
 
-  const coverLetter = response.data.cover_letter;
+  const coverLetter = response.data.draft;
 
   // save to application
   await this.jobApplicationRepository.update(id, {
@@ -277,15 +281,16 @@ async refineCoverLetter(id: string, feedback: string, constraints?: { max_words?
 
   // call AI service
   const response = await firstValueFrom(
-    this.httpService.post(`${process.env.AI_SERVICE_URL}/refine-content`, {
-      content_type: 'cover_letter',
-      original_content: application.coverLetterCurrent,
-      feedback,
-      constraints,
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/cover-letter/refine`, {
+      user_id: application.userId,
+      job_id: application.jobId,
+      current_draft: application.coverLetterCurrent,
+      instruction: feedback,
+      preferences: constraints,
     })
   );
 
-  const refinedContent = response.data.refined_content;
+  const refinedContent = response.data.draft;
 
   // save refined version
   await this.jobApplicationRepository.update(id, { coverLetterCurrent: refinedContent });
@@ -293,7 +298,7 @@ async refineCoverLetter(id: string, feedback: string, constraints?: { max_words?
   // save version snapshot
   await this.saveVersion(id, 'cover_letter', refinedContent, 'ai_refinement');
 
-  return { cover_letter: refinedContent, changes_made: response.data.changes_made };
+  return { cover_letter: refinedContent };
 }
 
 // REVERT COVER LETTER TO PREVIOUS VERSION
@@ -334,17 +339,27 @@ async generateEmail(id: string, options: { tone?: string; include_cover_letter?:
   }
 
   // call AI service
+  const masterProfile = await this.masterProfileRepository.findOneBy({ userId: application.userId });
+
   const response = await firstValueFrom(
-    this.httpService.post(`${process.env.AI_SERVICE_URL}/generate-email`, {
-      job_title: job.title,
-      company: job.company,
-      applicant_name: user.name,
-      cover_letter_attached: options.include_cover_letter ?? true,
-      tone: options.tone ?? 'professional',
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/email/generate`, {
+      user_id: application.userId,
+      job_id: application.jobId,
+      email_id: crypto.randomUUID(),
+      profile: masterProfile?.structured_data_json,
+      job: job.structured_job_json,
+      cover_letter: options.include_cover_letter ? application.coverLetterCurrent : null,
+      preferences: {
+        email_type: 'short_intro',
+        tone: options.tone ?? 'professional',
+        addressee: 'Hiring Manager',
+        include_subject: true,
+      },
     })
   );
 
-  const { subject, body } = response.data;
+  const { subject } = response.data;
+  const body = response.data.draft;
 
   // save to application
   await this.jobApplicationRepository.update(id, {
@@ -492,7 +507,7 @@ async updateResumeBullet(
   return { updated: action === SuggestionAction.ACCEPT, action };
 }
 
-// GENERATE PDF RESUME
+// GENERATE PDF RESUME - returns data for frontend to render
 async generatePdf(id: string) {
   const application = await this.findOne(id);
   const user = await this.userRepository.findOneBy({ id: application.userId });
@@ -500,22 +515,6 @@ async generatePdf(id: string) {
   if (!user) {
     throw new NotFoundException(`User not found`);
   }
-
-  // call AI service to generate PDF
-  const response = await firstValueFrom(
-    this.httpService.post(`${process.env.AI_SERVICE_URL}/generate-pdf`, {
-      resume_data: application.tailoredResumeJson,
-      user_name: user.name,
-      application_id: id,
-    })
-  );
-
-  const pdfUrl = response.data.pdf_url;
-
-  // save pdf url to application
-  await this.jobApplicationRepository.update(id, {
-    resumeFileUrl: pdfUrl,
-  });
 
   // create timeline event
   await this.timelineRepository.save(
@@ -528,10 +527,14 @@ async generatePdf(id: string) {
     })
   );
 
-  return { pdf_url: pdfUrl };
+  return {
+    resume_data: application.tailoredResumeJson,
+    user_name: user.name,
+    application_id: id,
+  };
 }
 
-// PREVIEW PDF - temporary preview without saving
+// PREVIEW PDF - returns data for frontend to render
 async previewPdf(id: string) {
   const application = await this.findOne(id);
   const user = await this.userRepository.findOneBy({ id: application.userId });
@@ -540,15 +543,9 @@ async previewPdf(id: string) {
     throw new NotFoundException(`User not found`);
   }
 
-  // call AI service for temporary preview
-  const response = await firstValueFrom(
-    this.httpService.post(`${process.env.AI_SERVICE_URL}/preview-pdf`, {
-      resume_data: application.tailoredResumeJson,
-      user_name: user.name,
-    })
-  );
-
-  // preview url is temporary - not saved to database
-  return { preview_url: response.data.preview_url, expires_in: response.data.expires_in };
+  return {
+    resume_data: application.tailoredResumeJson,
+    user_name: user.name,
+  };
 }
 }

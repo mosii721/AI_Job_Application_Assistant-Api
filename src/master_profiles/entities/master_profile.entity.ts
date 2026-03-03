@@ -15,7 +15,10 @@ export class MasterProfile {
     @Column('jsonb')
     structured_data_json: {
         summary?: string; 
-        skills?: string[]; 
+        skills?: any[];
+        personal?: any;
+        certfications?: any;
+        extracted_metadata?: any; 
         experience?: {
             company: string; 
             job_title: string; 
@@ -30,8 +33,8 @@ export class MasterProfile {
             end_date?: string;
         }[]};
 
-    @Column("float", { array: true, nullable: true })
-    resume_embedding:number[];
+    @Column('jsonb', { nullable: true })
+    resume_embedding: Record<string, number[]>;
 
     @Column({type:'timestamp', default:() => 'CURRENT_TIMESTAMP'})
     createdAt: Date;

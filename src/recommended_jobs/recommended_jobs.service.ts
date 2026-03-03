@@ -9,7 +9,8 @@ import { JobsService } from 'src/jobs/jobs.service';
 import { HttpService } from '@nestjs/axios';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { firstValueFrom } from 'rxjs';
-import * as puppeteer from 'puppeteer';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 
 @Injectable()
 export class RecommendedJobsService {
@@ -102,54 +103,40 @@ export class RecommendedJobsService {
 
   // FETCH FROM BRIGHTERMONDAY - scrapes job listing page using Puppeteer
   private async fetchFromBrighterMonday(preferences: UserPreference): Promise<{ url: string; source: string }[]> {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  try {
+    const role = preferences.preferredRoles[0] ?? 'developer';
+    const location = preferences.locationPreference[0] ?? 'nairobi';
+
+    const searchUrl = `https://www.brightermonday.co.ke/jobs?q=${encodeURIComponent(role)}&l=${encodeURIComponent(location)}`;
+
+    const response = await axios.get(searchUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+      },
+      timeout: 30000,
     });
 
-    try {
-      const role = preferences.preferredRoles[0] ?? 'developer';
-      const location = preferences.locationPreference[0] ?? 'nairobi';
+    const $ = cheerio.load(response.data);
 
-      const searchUrl = `https://www.brightermonday.co.ke/jobs?q=${encodeURIComponent(role)}&l=${encodeURIComponent(location)}`;
+    const jobUrls: string[] = [];
 
-      const page = await browser.newPage();
+    $('a[href*="/jobs/"]').each((_, el) => {
+      const href = $(el).attr('href');
+      if (href && href.includes('/jobs/') && !href.includes('?') && !jobUrls.includes(href)) {
+        const fullUrl = href.startsWith('http') ? href : `https://www.brightermonday.co.ke${href}`;
+        jobUrls.push(fullUrl);
+      }
+    });
 
-      // set user agent to avoid bot detection
-      await page.setUserAgent(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      );
-
-      await page.goto(searchUrl, { 
-        waitUntil: 'networkidle2',
-        timeout: 30000,
-      });
-
-      // extract individual job URLs from the listing page
-      const jobUrls = await page.evaluate(() => {
-        const links = document.querySelectorAll('a[href*="/jobs/"]');
-        const urls: string[] = [];
-        links.forEach(link => {
-          const href = (link as HTMLAnchorElement).href;
-          // filter to only individual job pages not category pages
-          if (href.includes('/jobs/') && !href.includes('?') && !urls.includes(href)) {
-            urls.push(href);
-          }
-        });
-        return urls.slice(0, 10); // limit to 10 jobs per fetch
-      });
-
-      return jobUrls.map(url => ({
-        url,
-        source: 'brightermonday',
-      }));
-    } catch (error) {
-      console.error('BrighterMonday fetch failed:', error);
-      return [];
-    } finally {
-      await browser.close();
-    }
+    return jobUrls.slice(0, 10).map(url => ({
+      url,
+      source: 'brightermonday',
+    }));
+  } catch (error) {
+    console.error('BrighterMonday fetch failed:', error);
+    return [];
   }
+}
 
   // FETCH FROM REMOTIVE - API call for remote jobs
   private async fetchFromRemotive(preferences: UserPreference): Promise<{ url: string; source: string }[]> {

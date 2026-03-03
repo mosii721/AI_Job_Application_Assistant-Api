@@ -65,8 +65,8 @@ export class Job {
         required_experience_years?: number;
     }; // AI-structured version of raw_description
 
-    @Column("float", { array: true, nullable: true })
-    job_embedding: number[];
+    @Column({ type: 'jsonb', nullable: true })
+    job_embedding: Record<string, number[]>;
 
     @Column()
     source_url: string;

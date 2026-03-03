@@ -56,14 +56,7 @@ export class JobApplication {
     educationScore: number;
 
     @Column('jsonb')
-    matchAnalysisJson: {
-        overall_score: number;
-        match_level: string;
-        strengths: string[];
-        gaps: string[];
-        recommendations: string[];
-        summary: string;
-    };
+    matchAnalysisJson: Record<string, any>;
 
     @Column('jsonb')
     tailoredResumeJson: {

@@ -57,9 +57,7 @@ export class CreateJobApplicationDto {
     educationScore: number;
 
     @IsObject()
-    @ValidateNested()
-    @Type(() => MatchAnalysisDto)
-    matchAnalysisJson: MatchAnalysisDto;
+    matchAnalysisJson: Record<string, any>;
 
     @IsObject()
     @ValidateNested()

@@ -6,7 +6,8 @@ import { Repository, Like } from 'typeorm';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import * as crypto from 'crypto';
-import * as puppeteer from 'puppeteer';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 
 @Injectable()
 export class JobsService {
@@ -38,37 +39,24 @@ export class JobsService {
 
   // SCRAPE JOB PAGE - private helper using Puppeteer
   private async scrapeJobPage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'], // needed for linux/docker
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        },
+        timeout: 30000,
     });
 
-    try {
-      const page = await browser.newPage();
+      const $ = cheerio.load(response.data);
 
-      // set user agent to avoid bot detection
-      await page.setUserAgent(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-      );
-
-      await page.goto(url, { 
-        waitUntil: 'networkidle2', // wait until page fully loads
-        timeout: 30000 
-      });
+      $('script, style').remove();
 
       // extract all visible text from the page
-      const rawText = await page.evaluate(() => {
-        // remove script and style tags first
-        const scripts = document.querySelectorAll('script, style');
-        scripts.forEach(el => el.remove());
-        return document.body.innerText;
-      });
+      const rawText = $('body').text().replace(/\s+/g, ' ').trim();
 
       return rawText;
     } catch (error) {
       throw new BadRequestException(`Failed to scrape job page: ${error.message}`);
-    } finally {
-      await browser.close(); // always close browser
     }
   }
 
@@ -114,7 +102,8 @@ export class JobsService {
 
     // 5. call AI to extract structured job requirements from raw text
     const structureResponse = await firstValueFrom(
-      this.httpService.post(`${process.env.AI_SERVICE_URL}/extract-job-requirements`, {
+      this.httpService.post(`${process.env.AI_SERVICE_URL}/jobs/parse`, {
+        job_id: crypto.randomUUID(),
         raw_text: rawText,
         url,
       })
@@ -123,12 +112,16 @@ export class JobsService {
 
     // 6. call AI to generate embedding for the job
     const embeddingResponse = await firstValueFrom(
-      this.httpService.post(`${process.env.AI_SERVICE_URL}/generate-embedding`, {
-        text: rawText,
-        type: 'job',
+      this.httpService.post(`${process.env.AI_SERVICE_URL}/embeddings/job`, {
+        job_id: crypto.randomUUID(),
+        sections: ['responsibilities'],
+        data: {
+          ...structuredJob,
+          skills: structuredJob.required_skills?.map((s: any) => s.skill) ?? [],
+        },
       })
     );
-    const jobEmbedding = embeddingResponse.data.embedding;
+    const jobEmbedding = embeddingResponse.data.embeddings;
 
     // 7. save job to database
     const newJob = this.jobRepository.create({

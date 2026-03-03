@@ -40,9 +40,8 @@ export class MasterProfileDto {
     summary?: string;
 
     @IsOptional()
-    @IsString({ each:true})// validates every item in the array is a string
     @IsArray()
-    skills?: string[];
+    skills?: any[];
 
     @IsOptional()
     @IsArray()
@@ -70,7 +69,6 @@ export class CreateMasterProfileDto {
     @Type(() => MasterProfileDto) //This tells class-transformer to transform the plain object into an instance of MasterProfileDto
     structured_data_json:MasterProfileDto;
 
-    @IsArray()
-    @IsNumber({}, { each: true })
-    resume_embedding:number[];
+    @IsOptional()
+    resume_embedding: Record<string, number[]>;
 }
