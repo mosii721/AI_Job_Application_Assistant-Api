@@ -2,7 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UserPreferencesService } from './user_preferences.service';
 import { CreateUserPreferenceDto } from './dto/create-user_preference.dto';
 import { UpdateUserPreferenceDto } from './dto/update-user_preference.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user-preferences')
+@ApiBearerAuth()
 @Controller('user-preferences')
 export class UserPreferencesController {
   constructor(private readonly userPreferencesService: UserPreferencesService) {}

@@ -108,10 +108,6 @@ Content-Type: application/json
 GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/documents
 Authorization: Bearer {{accessToken}}
 
-//get all application docs
-###
-GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/documents/all
-Authorization: Bearer {{accessToken}}
 
 // reorder docs appp id on the url
 ###

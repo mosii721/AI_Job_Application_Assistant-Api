@@ -6,13 +6,21 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { UserDocumentsService } from './user_documents.service';
 import { DocumentType } from './entities/user_document.entity';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user-documents')
+@ApiBearerAuth()
 @Controller('user-documents')
 export class UserDocumentsController {
   constructor(private readonly userDocumentsService: UserDocumentsService) {}
 
   // UPLOAD RESUME
   @Post('upload/resume')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ schema: { type: 'object', properties: { 
+    userId: { type: 'string' }, 
+    file: { type: 'string', format: 'binary' } 
+  } } })
   @UseInterceptors(FileInterceptor('file', {
     storage: memoryStorage(),
     limits: { fileSize: 5 * 1024 * 1024 },
@@ -35,6 +43,17 @@ export class UserDocumentsController {
 
   // UPLOAD SUPPORTING DOCUMENT
   @Post('upload/document')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ schema: { type: 'object', properties: { 
+    userId: { type: 'string' }, 
+    file: { type: 'string', format: 'binary' },
+    type: { type: 'string', enum: Object.values(DocumentType) },
+    name: { type: 'string' },
+    certification_name: { type: 'string' },
+    issuing_org: { type: 'string' },
+    issue_date: { type: 'string' },
+    expiry_date: { type: 'string' },
+  } } })
   @UseInterceptors(FileInterceptor('file', {
     storage: memoryStorage(),
     limits: { fileSize: 5 * 1024 * 1024 },
@@ -56,6 +75,11 @@ export class UserDocumentsController {
 
   // UPLOAD PROFILE PHOTO
   @Post('upload/photo')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ schema: { type: 'object', properties: { 
+    userId: { type: 'string' }, 
+    image: { type: 'string', format: 'binary' } 
+  } } })
   @UseInterceptors(FileInterceptor('image', {
     storage: memoryStorage(),
     limits: { fileSize: 2 * 1024 * 1024 },
@@ -90,6 +114,7 @@ export class UserDocumentsController {
 
   // GET ALL DOCUMENTS FOR USER - dynamic route last
   @Get('documents/:userId')
+  @ApiQuery({ name: 'type', required: false, enum: DocumentType })
   findByUser(
     @Param('userId') userId: string,
     @Query('type') type?: DocumentType,

@@ -2,7 +2,10 @@ import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { SuggestionFeedbacksService } from './suggestion_feedbacks.service';
 import { CreateSuggestionFeedbackDto } from './dto/create-suggestion_feedback.dto';
 import { SuggestionContentType } from './entities/suggestion_feedback.entity';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('suggestion-feedbacks')
+@ApiBearerAuth()
 @Controller('feedback')
 export class SuggestionFeedbacksController {
   constructor(private readonly suggestionFeedbacksService: SuggestionFeedbacksService) {}
@@ -33,6 +36,7 @@ export class SuggestionFeedbacksController {
 
   // GET ALL FEEDBACK FOR AN APPLICATION
   @Get('application/:applicationId')
+  @ApiQuery({ name: 'contentType', required: false, enum: SuggestionContentType })
   findByApplicationId(
     @Param('applicationId') applicationId: string,
     @Query('contentType') contentType?: SuggestionContentType,

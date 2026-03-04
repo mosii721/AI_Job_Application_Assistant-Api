@@ -3,13 +3,17 @@ import { JobApplicationsService } from './job_applications.service';
 import { ApplicationStatus } from './entities/job_application.entity';
 import { SuggestionAction } from 'src/suggestion_feedbacks/entities/suggestion_feedback.entity';
 import { UpdateJobApplicationDto } from './dto/update-job_application.dto';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('job-applications')
+@ApiBearerAuth()
 @Controller('job-applications')
 export class JobApplicationsController {
   constructor(private readonly jobApplicationsService: JobApplicationsService) {}
 
   // CREATE - only needs userId and jobId
   @Post()
+  @ApiBody({ schema: { properties: { userId: { type: 'string' }, jobId: { type: 'string' } } } })
   create(@Body() body: { userId: string; jobId: string }) {
     return this.jobApplicationsService.create(body.userId, body.jobId);
   }
@@ -43,6 +47,7 @@ export class JobApplicationsController {
 
   // AUTO-SAVE tailored data edits
   @Patch(':id/tailored-data')
+  @ApiBody({ schema: { properties: { section: { type: 'string' }, newValue: {} } } })
   updateTailoredData(
     @Param('id') id: string,
     @Body() body: { section: string; newValue: any }
@@ -52,6 +57,7 @@ export class JobApplicationsController {
 
   // UPDATE STATUS
   @Patch(':id/status')
+  @ApiBody({ schema: { properties: { status: { type: 'string', enum: Object.values(ApplicationStatus) }, notes: { type: 'string' } } } })
   updateStatus(
     @Param('id') id: string,
     @Body() body: { status: ApplicationStatus; notes?: string }
@@ -67,6 +73,7 @@ export class JobApplicationsController {
 
   // GENERATE COVER LETTER
   @Post(':id/cover-letter')
+  @ApiBody({ schema: { properties: { tone: { type: 'string' }, length: { type: 'string' }, emphasize: { type: 'array', items: { type: 'string' } } } } })
   generateCoverLetter(
     @Param('id') id: string,
     @Body() body: { 
@@ -80,6 +87,7 @@ export class JobApplicationsController {
 
   // UPDATE COVER LETTER MANUALLY
   @Patch(':id/cover-letter')
+  @ApiBody({ schema: { properties: { content: { type: 'string' } } } })
   updateCoverLetter(
     @Param('id') id: string,
     @Body() body: { content: string }
@@ -89,6 +97,7 @@ export class JobApplicationsController {
 
   // REFINE COVER LETTER BASED ON FEEDBACK
   @Post(':id/cover-letter/refine')
+  @ApiBody({ schema: { properties: { feedback: { type: 'string' }, constraints: { type: 'object' } } } })
   refineCoverLetter(
     @Param('id') id: string,
     @Body() body: { feedback: string; constraints?: { max_words?: number } }
@@ -98,6 +107,7 @@ export class JobApplicationsController {
 
   // REVERT COVER LETTER TO PREVIOUS VERSION
   @Post(':id/cover-letter/revert')
+  @ApiBody({ schema: { properties: { version: { type: 'number' } } } })
   revertCoverLetter(
     @Param('id') id: string,
     @Body() body: { version: number }
@@ -107,6 +117,7 @@ export class JobApplicationsController {
 
   // GENERATE EMAIL
   @Post(':id/email')
+  @ApiBody({ schema: { properties: { tone: { type: 'string' }, include_cover_letter: { type: 'boolean' } } } })
   generateEmail(
     @Param('id') id: string,
     @Body() body: { tone?: string; include_cover_letter?: boolean }
@@ -116,6 +127,7 @@ export class JobApplicationsController {
 
   // UPDATE EMAIL MANUALLY
   @Patch(':id/email')
+  @ApiBody({ schema: { properties: { subject: { type: 'string' }, body: { type: 'string' } } } })
   updateEmail(
     @Param('id') id: string,
     @Body() body: { subject?: string; body?: string }
@@ -131,6 +143,7 @@ export class JobApplicationsController {
 
   // SUGGEST BULLET IMPROVEMENTS
   @Post(':id/resume/bullets/suggest')
+  @ApiBody({ schema: { properties: { experienceIndex: { type: 'number' }, bulletIndex: { type: 'number' } } } })
   suggestBulletImprovements(
     @Param('id') id: string,
     @Body() body: { experienceIndex: number; bulletIndex: number }
@@ -140,6 +153,7 @@ export class JobApplicationsController {
 
   // UPDATE RESUME BULLET
   @Patch(':id/resume/bullets')
+  @ApiBody({ schema: { properties: { experienceIndex: { type: 'number' }, newDescription: { type: 'string' }, action: { type: 'string', enum: Object.values(SuggestionAction) }, originalContent: { type: 'string' }, suggestedContent: { type: 'string' } } } })
   updateResumeBullet(
     @Param('id') id: string,
     @Body() body: { 

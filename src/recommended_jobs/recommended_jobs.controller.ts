@@ -1,6 +1,9 @@
 import { Controller, Get, Post, Param, Delete } from '@nestjs/common';
 import { RecommendedJobsService } from './recommended_jobs.service';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('recommended-jobs')
+@ApiBearerAuth()
 @Controller('recommendations')
 export class RecommendedJobsController {
   constructor(private readonly recommendedJobsService: RecommendedJobsService) {}

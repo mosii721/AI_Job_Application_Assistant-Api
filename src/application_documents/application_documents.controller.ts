@@ -1,7 +1,10 @@
 import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common';
 import { ApplicationDocumentsService } from './application_documents.service';
 import { CreateApplicationDocumentDto } from './dto/create-application_document.dto';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('application-documents')
+@ApiBearerAuth()
 @Controller('applications/:appId/documents')
 export class ApplicationDocumentsController {
   constructor(private readonly applicationDocumentsService: ApplicationDocumentsService) {}
@@ -18,6 +21,7 @@ export class ApplicationDocumentsController {
     });
   }
 
+
   // GET ALL DOCUMENTS FOR APPLICATION
   @Get()
   findByApplicationId(@Param('appId') appId: string) {
@@ -26,17 +30,12 @@ export class ApplicationDocumentsController {
 
   // REORDER DOCUMENTS
   @Patch('reorder')
+  @ApiBody({ schema: { properties: { documentIds: { type: 'array', items: { type: 'string' } } } } })
   reorder(
     @Param('appId') appId: string,
     @Body() body: { documentIds: string[] },
   ) {
     return this.applicationDocumentsService.reorder(appId, body.documentIds);
-  }
-
-  // GET ALL - admin only
-  @Get('all')
-  findAll() {
-    return this.applicationDocumentsService.findAll();
   }
 
   // REMOVE DOCUMENT FROM APPLICATION

@@ -6,7 +6,10 @@ import { RolesGuard } from 'src/auth/guards';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { Role } from './entities/user.entity';
+import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('users')
+@ApiBearerAuth()
 @UseGuards(RolesGuard)
 @Controller('users')
 export class UsersController {
@@ -19,6 +22,7 @@ export class UsersController {
   }
 
   @Roles(Role.ADMIN)
+  @ApiQuery({ name: 'email', required: false })
   @Get()
   findAll(@Query('email')email?:string) {
     if(email){
@@ -43,6 +47,7 @@ export class UsersController {
   }
 
   @Patch(':id/active')
+  @ApiBody({ schema: { properties: { active: { type: 'boolean' } } } })
   async updateActive(@Param('id')id:string,@Body('active') active:boolean){
     return await this.usersService.updateActive(id,active)
   }

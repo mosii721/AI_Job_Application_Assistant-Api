@@ -1,25 +1,31 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { JobsService } from './jobs.service';
 import { UpdateJobDto } from './dto/update-job.dto';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('jobs')
+@ApiBearerAuth()
 @Controller('jobs')
 export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 
   // SCRAPE AND CREATE JOB - main endpoint
   @Post('scrape')
+  @ApiBody({ schema: { properties: { url: { type: 'string' } } } })
   scrapeAndCreate(@Body() body: { url: string }) {
     return this.jobsService.scrapeAndCreate(body.url);
   }
 
   // CHECK DUPLICATE
   @Post('check-duplicate')
+  @ApiBody({ schema: { properties: { url: { type: 'string' } } } })
   checkDuplicate(@Body() body: { url: string }) {
     return this.jobsService.checkDuplicate(body.url);
   }
 
   // SEARCH JOBS
   @Post('search')
+  @ApiBody({ schema: { properties: { query: { type: 'string' }, filters: { type: 'object', properties: { location: { type: 'string' }, role: { type: 'string' }, mode: { type: 'string' } } } } } })
   search(@Body() body: {
     query?: string;
     filters?: {

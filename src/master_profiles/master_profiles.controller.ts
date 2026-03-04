@@ -1,7 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { MasterProfilesService } from './master_profiles.service';
 import { UpdateMasterProfileDto } from './dto/update-master_profile.dto';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('master-profiles')
+@ApiBearerAuth()
 @Controller('master-profiles')
 export class MasterProfilesController {
   constructor(private readonly masterProfilesService: MasterProfilesService) {}
@@ -21,6 +24,7 @@ export class MasterProfilesController {
 
   // ADD SKILL
   @Post(':userId/skills')
+  @ApiBody({ schema: { properties: { name: { type: 'string' } } } })
   addSkill(
     @Param('userId') userId: string,
     @Body() body: { name: string }
@@ -39,6 +43,13 @@ export class MasterProfilesController {
 
   // ADD EXPERIENCE
   @Post(':userId/experience')
+  @ApiBody({ schema: { properties: { 
+    company: { type: 'string' }, 
+    job_title: { type: 'string' }, 
+    start_date: { type: 'string' }, 
+    end_date: { type: 'string' }, 
+    description: { type: 'string' } 
+  } } })
   addExperience(
     @Param('userId') userId: string,
     @Body() body: { company: string; job_title: string; start_date: string; end_date?: string; description: string }
@@ -48,6 +59,13 @@ export class MasterProfilesController {
 
   // UPDATE EXPERIENCE
   @Patch(':userId/experience/:index')
+  @ApiBody({ schema: { properties: { 
+    company: { type: 'string' }, 
+    job_title: { type: 'string' }, 
+    start_date: { type: 'string' }, 
+    end_date: { type: 'string' }, 
+    description: { type: 'string' } 
+  } } })
   updateExperience(
     @Param('userId') userId: string,
     @Param('index') index: string,
@@ -67,6 +85,12 @@ export class MasterProfilesController {
 
   // ADD EDUCATION
   @Post(':userId/education')
+  @ApiBody({ schema: { properties: { 
+    institution: { type: 'string' }, 
+    degree: { type: 'string' }, 
+    start_date: { type: 'string' }, 
+    end_date: { type: 'string' } 
+  } } })
   addEducation(
     @Param('userId') userId: string,
     @Body() body: { institution: string; degree: string; start_date: string; end_date?: string }
@@ -76,6 +100,12 @@ export class MasterProfilesController {
 
   // UPDATE EDUCATION
   @Patch(':userId/education/:index')
+  @ApiBody({ schema: { properties: { 
+    institution: { type: 'string' }, 
+    degree: { type: 'string' }, 
+    start_date: { type: 'string' }, 
+    end_date: { type: 'string' } 
+  } } })
   updateEducation(
     @Param('userId') userId: string,
     @Param('index') index: string,

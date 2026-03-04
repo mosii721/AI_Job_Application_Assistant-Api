@@ -4,6 +4,7 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { Public } from './decorators/public.decorator';
 import { AtGuard, RtGuard } from './guards';
 import { Request } from 'express';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
 interface RequestWithUser extends Request{
   user:{
@@ -13,7 +14,8 @@ interface RequestWithUser extends Request{
   }
 }
 
-
+@ApiTags('auth')
+@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -42,12 +44,22 @@ export class AuthController {
   }
 
   @Public()
+  @ApiBody({ schema: { properties: { email: { type: 'string' } } } })
   @Post('request_password_change')
   async requestPasswordcChange(@Body('email') email:string){
     return await this.authService.requestPasswordChange(email);
   }
 
   @Public()
+  @ApiBody({ 
+    schema: { 
+      properties: { 
+        email: { type: 'string' },
+        otp: { type: 'string' },
+        newPassword: { type: 'string' }
+      } 
+    } 
+  })
   @Post('verifyOtpAndUpdatePassword')
   async verifyOtpAndUpdatePassword(@Body('email')email:string, @Body('otp')otp:string, @Body('newPassword')newPassword:string){
     return await this.authService.verifyOtpAndUpdatePassword(email,otp,newPassword)
