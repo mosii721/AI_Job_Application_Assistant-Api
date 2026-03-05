@@ -138,6 +138,24 @@ export class MasterProfilesController {
     return this.masterProfilesService.replaceProfile(userId, updateMasterProfileDto);
   }
 
+  // UPDATE PERSONAL INFO
+  @Patch(':userId/personal')
+  @ApiBody({ schema: { properties: { 
+    name: { type: 'string' }, 
+    location: { type: 'string' },
+    email: { type: 'string' },
+    phone: { type: 'string' },
+    linkedin: { type: 'string' },
+    photo_url: { type: 'string' },
+    portfolio: { type: 'string' }
+  } } })
+  updatePersonal(
+    @Param('userId') userId: string,
+    @Body() body: { name?: string; location?: string; email?: string; phone?: string;linkedin?: string;    photo_url?: string;portfolio?: string; }
+  ) {
+    return this.masterProfilesService.updatePersonal(userId, body);
+  }
+
   // DELETE
   @Delete(':userId')
   remove(@Param('userId') userId: string) {

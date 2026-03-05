@@ -73,14 +73,24 @@ export class RecommendedJobsService {
           });
           if (alreadyRecommended) continue;
 
+          // Skip scoring if profile data is missing
+          if (!user.masterProfile?.structured_data_json || !job.job_embedding) {
+            console.log(`Skipping scoring for user ${user.id} - missing profile or job embedding`);
+            continue;
+          }
+
           // 5. call AI for basic match score using embeddings
           const matchResponse = await firstValueFrom(
-            this.httpService.post(`${process.env.AI_SERVICE_URL}/compute-similarity`, {
-              resume_embedding: user.masterProfile?.resume_embedding,
-              job_embedding: job.job_embedding,
+            this.httpService.post(`${process.env.AI_SERVICE_URL}/scoring/match`, {
+              user_id: user.id,
+              job_id: job.id,
+              profile: user.masterProfile?.structured_data_json,
+              job: job.structured_job_json,
+              profile_embeddings: user.masterProfile?.resume_embedding,
+              job_embeddings: job.job_embedding,
             })
           );
-          const basicMatchScore = matchResponse.data.similarity_score;
+          const basicMatchScore = matchResponse.data.overall_score;
 
           // 6. save recommendation
           const recommendation = this.recommendedJobRepository.create({
@@ -107,7 +117,7 @@ export class RecommendedJobsService {
     const role = preferences.preferredRoles[0] ?? 'developer';
     const location = preferences.locationPreference[0] ?? 'nairobi';
 
-    const searchUrl = `https://www.brightermonday.co.ke/jobs?q=${encodeURIComponent(role)}&l=${encodeURIComponent(location)}`;
+    const searchUrl = `${process.env.BRIGHTERMONDAY_BASE_URL}?q=${encodeURIComponent(role)}&l=${encodeURIComponent(location)}`;
 
     const response = await axios.get(searchUrl, {
       headers: {
@@ -120,9 +130,9 @@ export class RecommendedJobsService {
 
     const jobUrls: string[] = [];
 
-    $('a[href*="/jobs/"]').each((_, el) => {
-      const href = $(el).attr('href');
-      if (href && href.includes('/jobs/') && !href.includes('?') && !jobUrls.includes(href)) {
+    $('a[href*="/listings/"]').each((_, el) => {
+    const href = $(el).attr('href');
+    if (href && href.includes('/listings/') && !href.includes('?') && !jobUrls.includes(href)) {
         const fullUrl = href.startsWith('http') ? href : `https://www.brightermonday.co.ke${href}`;
         jobUrls.push(fullUrl);
       }
@@ -142,6 +152,8 @@ export class RecommendedJobsService {
   private async fetchFromRemotive(preferences: UserPreference): Promise<{ url: string; source: string }[]> {
     try {
       const role = preferences.preferredRoles[0] ?? 'software developer';
+      console.log('Fetching from Remotive with role:', role);
+      console.log('Remotive URL:', process.env.REMOTIVE_BASE_URL);
 
       const response = await firstValueFrom(
         this.httpService.get(`${process.env.REMOTIVE_BASE_URL}`, {
@@ -151,6 +163,8 @@ export class RecommendedJobsService {
           },
         })
       );
+
+      console.log('Remotive response jobs count:', response.data.jobs?.length);
 
       return response.data.jobs.map((job: any) => ({
         url: job.url,

@@ -1,9 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsString } from "class-validator";
+import { IsInt, IsOptional, IsString } from "class-validator";
 
 export class CreateApplicationDocumentDto {
     @ApiProperty({ description: 'ID of the Job application this document belongs to' })
     @IsString()
+    @IsOptional()
     applicationId: string;
 
     @ApiProperty({ description: 'ID of the user document' })

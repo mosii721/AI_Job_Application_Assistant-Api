@@ -8,6 +8,11 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 export class RecommendedJobsController {
   constructor(private readonly recommendedJobsService: RecommendedJobsService) {}
 
+  @Post('trigger')
+  async triggerCron() {
+    await this.recommendedJobsService.fetchAndRecommendJobs();
+    return { triggered: true };
+  }
   // GET ALL - admin only
   @Get()
   findAll() {

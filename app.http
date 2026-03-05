@@ -1,7 +1,7 @@
 @url1 = https://ai-job-application-assistant-api.onrender.com/api/v1
 @url = http://localhost:5000/api/v1
 
-@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcyNTI5MDAyLCJleHAiOjE3NzI1MzE3MDJ9.Ajl9Ok0MKHdJeuTirrzxMWAXYXeStS43UQT-NI7Gix8
+@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcyNzUxNDY5LCJleHAiOjE3NzI3NTQxNjl9.7rzkSIhzlz8ojFyIZUyAwDZioSQ-QW9ogI6W7S2tDOI
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
 idUser = c145911f-a878-4c9a-9d9b-00adfb2c50b6
 jobid = ef315272-8fb1-4964-9a1a-aa617b58c259
@@ -78,12 +78,12 @@ GET {{url}}/users/44896f4d-e55a-454e-a86c-db5a554f5200
 Authorization: Bearer {{accessToken}}
 
 ###
-PATCH {{url}}/users/44896f4d-e55a-454e-a86c-db5a554f5200
+PATCH {{url}}/users/6af98802-2d2e-45f7-96c3-67f583826200
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json  
 
 {
-  "name": "Mike Kiprop Alwanga",
+  "name": "Mike Kiprop J2",
   "phone":"0733031821",
   "email":"mikealwanga97@gmail.com"
 }
@@ -94,37 +94,37 @@ Authorization: Bearer {{accessToken}}
 
 // add document to application app id is on the url 
 ###
-POST {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/documents
+POST {{url}}/applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/documents
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "documentId": "4ffc923c-5e1b-4231-8128-ac8402e86b06",
-  "displayOrder": 1
+  "documentId": "23491317-0799-4aff-9720-0efc12f4bb9b",
+  "displayOrder": 2
 }
 
 //get all docs from application
 ###
-GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/documents
+GET {{url}}/applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/documents
 Authorization: Bearer {{accessToken}}
 
 
 // reorder docs appp id on the url
 ###
-PATCH {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/documents/reorder
+PATCH {{url}}/applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/documents/reorder
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
   "documentIds": [
-    "4ffc923c-5e1b-4231-8128-ac8402e86b06",
-    "another-document-id"
+    "23491317-0799-4aff-9720-0efc12f4bb9b",
+    "29a44b81-e4f9-439d-8c26-010a6a35ca10"
   ]
 }
 
 // remove docs from app
 ###
-DELETE {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/documents/4ffc923c-5e1b-4231-8128-ac8402e86b06
+DELETE {{url}}/applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/documents/29a44b81-e4f9-439d-8c26-010a6a35ca10
 Authorization: Bearer {{accessToken}}
 
 
@@ -136,12 +136,12 @@ Authorization: Bearer {{accessToken}}
 
 //get timeline filtered by event type satatus_change, note_added
 ###
-GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/timeline?eventType=STATUS_CHANGE
+GET {{url}}/applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/timeline?eventType=status_change
 Authorization: Bearer {{accessToken}}
 
 //get one timeline event
 ###
-GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/timeline/f5547a4d-1564-4d03-aca7-2c4db82e4ab9
+GET {{url}}/applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/timeline/f873d326-fd56-439f-88a8-c32f2d138bde
 Authorization: Bearer {{accessToken}}
 
 // get all timeline events adimn
@@ -149,12 +149,6 @@ Authorization: Bearer {{accessToken}}
 GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/timeline/all
 Authorization: Bearer {{accessToken}}
 
-
-
-//get all versions
-###
-GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/versions/all
-Authorization: Bearer {{accessToken}}
 
 // get all versions for applications id on url
 ###
@@ -166,20 +160,28 @@ Authorization: Bearer {{accessToken}}
 GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/versions?contentType=EMAIL
 Authorization: Bearer {{accessToken}}
 
+
+
 //get cover letter versions only
 ###
-GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/versions/cover-letter
+GET {{url}}/applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/versions/cover-letter
 Authorization: Bearer {{accessToken}}
 
 //get email versions only
 ###
-GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/versions/email
+GET {{url}}/applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/versions/email
 Authorization: Bearer {{accessToken}}
 
 //get one version scoped to app
 ###
-GET {{url}}/applications/beaab228-ab10-4552-b053-d99eeb03794f/versions/resume-bullet
+GET {{url}}/applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/versions/resume-bullet
 Authorization: Bearer {{accessToken}}
+
+// get one specific version by versionId (appId is in URL but ignored by service)
+###
+GET {{url}}/applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/versions/e268fc3e-ecb0-4b69-9ac0-598ae669b4ac
+Authorization: Bearer {{accessToken}}
+
 
 
 ###
@@ -197,11 +199,11 @@ GET {{url}}/job-applications
 Authorization: Bearer {{accessToken}}
 
 ###
-GET {{url}}/job-applications/user/c2f2cea3-fdbf-4898-b7a7-e825443e6309
+GET {{url}}/job-applications/user/c145911f-a878-4c9a-9d9b-00adfb2c50b6
 Authorization: Bearer {{accessToken}}
 
 ###
-GET {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f
+GET {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e
 Authorization: Bearer {{accessToken}}
 
 ###
@@ -215,7 +217,7 @@ Content-Type: application/json
 }
 // auto save tailored data
 ###
-PATCH {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/tailored-data
+PATCH {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/tailored-data
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -223,9 +225,10 @@ Content-Type: application/json
   "section": "skills",
   "newValue": ["React", "NestJS", "PostgreSQL"]
 }
+
 // update status
 ###
-PATCH {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/status
+PATCH {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/status
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -251,7 +254,7 @@ Content-Type: application/json
 }
 //update cover letter content manually
 ###
-PATCH {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/cover-letter
+PATCH {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/cover-letter
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -272,7 +275,7 @@ Content-Type: application/json
 }
 // revert cover letter
 ###
-POST {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/cover-letter/revert
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/cover-letter/revert
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -291,7 +294,7 @@ Content-Type: application/json
 }
 // update email manually
 ###
-PATCH {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/email
+PATCH {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/email
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -302,12 +305,12 @@ Content-Type: application/json
 
 // get match analysis
 ###
-GET {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/match-analysis
+GET {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/match-analysis
 Authorization: Bearer {{accessToken}}
 
 # suggest bullet improvements
 ###
-POST {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/resume/bullets/suggest
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/resume/bullets/suggest
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -318,7 +321,7 @@ Content-Type: application/json
 
 # update resume bullet
 ###
-PATCH {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f/resume/bullets
+PATCH {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/resume/bullets
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -361,7 +364,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "url": "https://www.example.net/job-posting"
+  "url": "https://remoteok.com/remote-jobs/remote-senior-fullstack-developer-kodify-media-group-1130526"
 }
 
 //search jobs
@@ -371,9 +374,17 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "query": "developer",
+  "query": "developer"
+  
+}
+
+###
+POST {{url}}/jobs/search
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
   "filters": {
-    "location": "Nairobi",
     "role": "Backend"
   }
 }
@@ -387,12 +398,12 @@ GET {{url}}/jobs/4afea712-fabc-45e0-98da-0618bfea2154
 Authorization: Bearer {{accessToken}}
 
 ###
-PATCH {{url}}/jobs/4afea712-fabc-45e0-98da-0618bfea2154
+PATCH {{url}}/jobs/74d4f2c3-7bf9-4da3-beee-f6b506f5cde1
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json  
 
 {
-  "company":"airtel"
+  "title":"Laravel Developer"
 }
 
 ###
@@ -401,7 +412,7 @@ Authorization: Bearer {{accessToken}}
 
 // replace entire profile
 ###
-PATCH {{url}}/master-profiles/c2f2cea3-fdbf-4898-b7a7-e825443e6309
+PATCH {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -414,19 +425,24 @@ Content-Type: application/json
   }
 }
 
+// get version history
+###
+GET {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6/version-history
+Authorization: Bearer {{accessToken}}
+
 //add skill
 ###
-POST {{url}}/master-profile/c2f2cea3-fdbf-4898-b7a7-e825443e6309/skills
+POST {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6/skills
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "name": "PostgreSQL"
+  "name": "Spring Boot"
 }
 
 // remove skill
 ###
-DELETE {{url}}/master-profile/c2f2cea3-fdbf-4898-b7a7-e825443e6309/skills/PostgreSQL
+DELETE {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6/skills/CSS
 Authorization: Bearer {{accessToken}}
 
 ###
@@ -441,23 +457,22 @@ Authorization: Bearer {{accessToken}}
 
 //update personal
 ###
-PATCH {{url}}/master-profiles/c2f2cea3-fdbf-4898-b7a7-e825443e6309/personal
+PATCH {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6/personal
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "name": "John Doe",
-  "location": "Berlin"
+  "location": "Kutus"
 }
 
 //get skills
 ###
-GET {{url}}/master-profiles/c2f2cea3-fdbf-4898-b7a7-e825443e6309/skills
+GET {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6/skills
 Authorization: Bearer {{accessToken}}
 
 //add Experience
 ###
-POST {{url}}/master-profiles/{{userId}}/experience
+POST {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6/experience
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -466,12 +481,12 @@ Content-Type: application/json
   "job_title": "Software Engineer",
   "start_date": "2022-01-01",
   "end_date": "2023-01-01",
-  "description": "Worked on backend systems"
+  "description": "Worked on backend systems using Spring Boot and JAVA"
 }
 
 //update experience by index
 ###
-PATCH {{url}}/master-profiles/{{userId}}/experience/0
+PATCH {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6/experience/2
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -481,12 +496,12 @@ Content-Type: application/json
 
 //remove experience
 ###
-DELETE {{url}}/master-profiles/{{userId}}/experience/0
+DELETE {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6/experience/2
 Authorization: Bearer {{accessToken}}
 
 // add education
 ###
-POST {{url}}/master-profiles/{{userId}}/education
+POST {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6/education
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
@@ -499,38 +514,23 @@ Content-Type: application/json
 
 // update  education by index
 ###
-PATCH {{url}}/master-profiles/{{userId}}/education/0
+PATCH {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6/education/1
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "degree": "BSc Software Engineering"
+  "degree": "BSc Criminology"
 }
 
 //remove education
 ###
-DELETE {{url}}/master-profiles/{{userId}}/education/0
+DELETE {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6/education/1
 Authorization: Bearer {{accessToken}}
 
-// get version history
-###
-GET {{url}}/master-profiles/{{userId}}/version-history
-Authorization: Bearer {{accessToken}}
-
-###
-POST {{url}}/recommended-jobs
-Content-Type: application/json
-Authorization: Bearer {{accessToken}}
-
-{
-  "userId": "c2f2cea3-fdbf-4898-b7a7-e825443e6309",
-  "jobId":"4afea712-fabc-45e0-98da-0618bfea2154",
-  "basicMatchScore":0.4
-}
 
 // delete profile by user id
 ###
-DELETE {{url}}/master-profiles/{{userId}}
+DELETE {{url}}/master-profiles/c145911f-a878-4c9a-9d9b-00adfb2c50b6
 Authorization: Bearer {{accessToken}}
 
 
@@ -541,17 +541,17 @@ Authorization: Bearer {{accessToken}}
 
 //get recomendations for user
 ###
-GET {{url}}/recommendations/user/adabf1cd-1968-4320-9c03-5bb358131798
+GET {{url}}/recommendations/c145911f-a878-4c9a-9d9b-00adfb2c50b6
 Authorization: Bearer {{accessToken}}
 
 //mark recomendations as processed
 ###
-POST {{url}}/recommendations/user/adabf1cd-1968-4320-9c03-5bb358131798/job/JOB_ID_HERE/process
+POST {{url}}/recommendations/process/c145911f-a878-4c9a-9d9b-00adfb2c50b6/20483522-d572-4539-a307-ca5b0a5c6238
 Authorization: Bearer {{accessToken}}
 
 //delete recommendations 
 ###
-DELETE {{url}}/recommendations/RECOMMENDATION_ID_HERE
+DELETE {{url}}/recommendations/adabf1cd-1968-4320-9c03-5bb358131798
 Authorization: Bearer {{accessToken}}
 
 
@@ -576,17 +576,17 @@ Authorization: Bearer {{accessToken}}
 
 //get fedback summary for user
 ###
-GET {{url}}/feedback/summary/c2f2cea3-fdbf-4898-b7a7-e825443e6309
+GET {{url}}/feedback/summary/c145911f-a878-4c9a-9d9b-00adfb2c50b6
 Authorization: Bearer {{accessToken}}
 
 //get all feedback for a user
 ###
-GET {{url}}/feedback/user/c2f2cea3-fdbf-4898-b7a7-e825443e6309
+GET {{url}}/feedback/user/c145911f-a878-4c9a-9d9b-00adfb2c50b6
 Authorization: Bearer {{accessToken}}
 
 //get all feedback for an application
 ###
-GET {{url}}/feedback/application/beaab228-ab10-4552-b053-d99eeb03794f
+GET {{url}}/feedback/application/4c112fe5-bec3-4e0d-9676-c5cd5278703e
 Authorization: Bearer {{accessToken}}
 
 // filtered by content
@@ -596,7 +596,7 @@ Authorization: Bearer {{accessToken}}
 
 //get one feedback record
 ###
-GET {{url}}/feedback/f3756632-5664-4b62-85b7-ba41acd8d0dc
+GET {{url}}/feedback/106b400e-5ae7-453c-8a96-41243df73e52
 Authorization: Bearer {{accessToken}}
 
 //upload resume
@@ -640,30 +640,21 @@ Authorization: Bearer {{accessToken}}
 
 //get single doc
 ###
-GET {{url}}/user-documents/documents/file/4ffc923c-5e1b-4231-8128-ac8402e86b06
+GET {{url}}/user-documents/documents/file/23491317-0799-4aff-9720-0efc12f4bb9b
 Authorization: Bearer {{accessToken}}
 
 //get all docs one user
 ###
-GET {{url}}/user-documents/documents/c2f2cea3-fdbf-4898-b7a7-e825443e6309
+GET {{url}}/user-documents/documents/c145911f-a878-4c9a-9d9b-00adfb2c50b6
 Authorization: Bearer {{accessToken}}
 
 //get doc by type
 ###
-GET {{url}}/user-documents/documents/c2f2cea3-fdbf-4898-b7a7-e825443e6309?type=CERTIFICATION
+GET {{url}}/user-documents/documents/c145911f-a878-4c9a-9d9b-00adfb2c50b6?type=resume
 Authorization: Bearer {{accessToken}}
 
 ###
-PATCH {{url}}/user-documents/4ffc923c-5e1b-4231-8128-ac8402e86b06
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json  
-
-{
-  "pageCount":3
-}
-
-###
-DELETE {{url}}/user-documents/documents/file/4ffc923c-5e1b-4231-8128-ac8402e86b06
+DELETE {{url}}/user-documents/documents/file/29a44b81-e4f9-439d-8c26-010a6a35ca10
 Authorization: Bearer {{accessToken}}
 
 ###
@@ -686,11 +677,11 @@ Authorization: Bearer {{accessToken}}
 
 // get one by user id
 ###
-GET {{url}}/user-preferences/c2f2cea3-fdbf-4898-b7a7-e825443e6309
+GET {{url}}/user-preferences/c145911f-a878-4c9a-9d9b-00adfb2c50b6
 Authorization: Bearer {{accessToken}}
 
 ###
-PATCH {{url}}/user-preferences/c2f2cea3-fdbf-4898-b7a7-e825443e6309
+PATCH {{url}}/user-preferences/300da820-9e09-458f-8cdb-e6cb0db712f0
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json  
 
@@ -700,5 +691,10 @@ Content-Type: application/json
 
 //delete by user id
 ###
-DELETE {{url}}/user-preferences/c2f2cea3-fdbf-4898-b7a7-e825443e6309
+DELETE {{url}}/user-preferences/c145911f-a878-4c9a-9d9b-00adfb2c50b6
+Authorization: Bearer {{accessToken}}
+
+// trigger recommendation cron job manually
+###
+POST {{url}}/recommendations/trigger
 Authorization: Bearer {{accessToken}}

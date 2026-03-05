@@ -432,6 +432,7 @@ private async saveVersion(
 }
 
 // SUGGEST RESUME BULLET IMPROVEMENTS - calls AI service
+// SUGGEST RESUME BULLET IMPROVEMENTS - calls AI service
 async suggestBulletImprovements(id: string, bulletIndex: number, experienceIndex: number) {
   const application = await this.findOne(id);
 
@@ -440,21 +441,29 @@ async suggestBulletImprovements(id: string, bulletIndex: number, experienceIndex
     throw new NotFoundException(`Experience at index ${experienceIndex} not found`);
   }
 
-  const bullet = experience[experienceIndex].description;
+  const experienceEntry = experience[experienceIndex];
 
   // call AI service
   const response = await firstValueFrom(
-    this.httpService.post(`${process.env.AI_SERVICE_URL}/suggest-improvements`, {
-      content_type: 'resume_bullet',
-      content: bullet,
-      job_context: application.matchAnalysisJson,
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/snapshot/generate`, {
+      snapshot_id: crypto.randomUUID(),
+      user_id: application.userId,
+      job_id: application.jobId,
+      section: 'experience',
+      profile_section_data: experienceEntry,
+      job: application.job?.structured_job_json,
+      gap_recommendations: application.matchAnalysisJson?.gap_recommendations ?? [],
     })
   );
 
   return {
-    original: bullet,
-    suggestions: response.data.suggestions,
+    original: experienceEntry,
+    suggestion: response.data.suggestion,
+    keywords_to_add: response.data.keywords_to_add,
+    reasoning: response.data.reasoning,
+    snapshot_id: response.data.snapshot_id,
     experienceIndex,
+    bulletIndex,
   };
 }
 

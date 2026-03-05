@@ -345,6 +345,32 @@ async replaceProfile(userId: string, updateMasterProfileDto: UpdateMasterProfile
     };
   }
 
+  // UPDATE PERSONAL INFO - PATCH /master-profiles/:userId/personal
+  async updatePersonal(userId: string, personal: {
+    name?: string;
+    location?: string;
+    email?: string;
+    phone?: string;
+    linkedin?: string;
+    photo_url?: string;
+    portfolio?: string;
+  }) {
+    const profile = await this.findByUserId(userId);
+
+    await this.masterProfileRepository.update(profile.id, {
+      structured_data_json: {
+        ...profile.structured_data_json,
+        personal: {
+          ...(profile.structured_data_json?.personal ?? {}),
+          ...personal,
+        },
+      },
+      version_number: profile.version_number + 1,
+    });
+
+    return this.findByUserId(userId);
+  }
+
   // DELETE BY USER ID
   async removeByUserId(userId: string) {
   const profile = await this.findByUserId(userId); // this already throws if not found
