@@ -91,14 +91,14 @@ export class AuthService {
     )
 
     await this.saveRefreshToken(foundUser.id, refresh_token);
-    try {
-    await this.mailService.sendLoginEmail(
-      foundUser.email,
-      foundUser.name,
-    );
-  } catch (error) {
-    console.error('Login email failed:', error);
-  }
+  //   try {
+  //   await this.mailService.sendLoginEmail(
+  //     foundUser.email,
+  //     foundUser.name,
+  //   );
+  // } catch (error) {
+  //   console.error('Login email failed:', error);
+  // }
 
     return{data:{tokens:{access_token, refresh_token},
     user:{

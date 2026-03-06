@@ -36,14 +36,14 @@ export class UsersService {
     }
 
     const savedUser = await this.userRepository.save(newUser)
-    try {
-    await this.mailService.sendLoginEmail(
-      savedUser.email,
-      savedUser.name,
-    );
-  } catch (error) {
-    console.error('Login email failed:', error);
-  }
+  //   try {
+  //   await this.mailService.sendLoginEmail(
+  //     savedUser.email,
+  //     savedUser.name,
+  //   );
+  // } catch (error) {
+  //   console.error('Login email failed:', error);
+  // }
     return savedUser;
   }
 
