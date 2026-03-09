@@ -138,6 +138,15 @@ export class UserDocumentsService {
     // 3. extract raw text from file
     const rawText = await this.extractText(file);
 
+    console.log('Extracted text length:', rawText.length);
+    console.log('Extracted text preview:', rawText.substring(0, 200));
+
+    if (!rawText || rawText.trim().length < 50) {
+      throw new BadRequestException(
+        'Could not extract text from this PDF. Please ensure your CV is a text-based PDF and not a scanned image, or try uploading as a DOCX file instead.'
+      );
+    }
+
     // 4. do basic pre-parsing before sending to AI
     const preParsed = this.preParse(rawText, user);
 
