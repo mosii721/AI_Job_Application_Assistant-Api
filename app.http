@@ -1,7 +1,7 @@
 @url1 = https://ai-job-application-assistant-api.onrender.com/api/v1
 @url = http://localhost:5000/api/v1
 
-@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzczMDQ0NDY5LCJleHAiOjE3NzMwNDcxNjl9.BGvWz6IZ-AzDMR39oTEdPpytFKQD_Y31c7gbi7W6TvA
+@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzczODMyOTQzLCJleHAiOjE3NzM4MzU2NDN9.fNE9RpyrfgrBHDOH1tvpwQh0-5ARKlfxZlZYGfzg0bA
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
 idUser = c145911f-a878-4c9a-9d9b-00adfb2c50b6
 jobid = ef315272-8fb1-4964-9a1a-aa617b58c259
@@ -309,16 +309,30 @@ Content-Type: application/json
 GET {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/match-analysis
 Authorization: Bearer {{accessToken}}
 
-# suggest bullet improvements
+#experience snapshot
 ###
-POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/resume/bullets/suggest
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/resume/experience/snapshot
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "experienceIndex": 0,
-  "bulletIndex": 0
+  "experienceIndex": 1
 }
+
+#summary snapshot
+###
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/resume/summary/snapshot
+Authorization: Bearer {{accessToken}}
+
+#summary snapshot
+###
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/resume/skills/snapshot
+Authorization: Bearer {{accessToken}}
+
+#summary snapshot
+###
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/resume/education/snapshot
+Authorization: Bearer {{accessToken}}
 
 # update resume bullet
 ###
@@ -664,12 +678,12 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "userId": "c145911f-a878-4c9a-9d9b-00adfb2c50b6",
-  "preferredRoles":["Backend Developer", "Full Stack Developer"],
+  "userId": "0b53851b-98fe-49aa-8903-d7c9eab94fa6",
+  "preferredRoles":["Frontend Developer", "Graphic Designer"],
   "industries":["Technology", "FinTech"],
-  "experienceLevel":"junior",
-  "locationPreference":["Nairobi", "Kutus"],
-  "jobType":["full_time", "internship"]
+  "experienceLevel":"senior",
+  "locationPreference":["Nairobi", "Kutus","kenya"],
+  "jobType":["full_time", "internship","part_time"]
 }
 
 ###

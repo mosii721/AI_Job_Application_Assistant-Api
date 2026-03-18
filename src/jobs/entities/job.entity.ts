@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { JobApplication } from "src/job_applications/entities/job_application.entity";
 import { RecommendedJob } from "src/recommended_jobs/entities/recommended_job.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
@@ -46,6 +47,7 @@ export class Job {
     @Column()
     location: string;
 
+    @Exclude()
     @Column('text')
     raw_description: string; // plain scraped text, always a string
 
@@ -65,12 +67,14 @@ export class Job {
         required_experience_years?: number;
     }; // AI-structured version of raw_description
 
+    @Exclude()
     @Column({ type: 'jsonb', nullable: true })
     job_embedding: Record<string, number[]>;
 
     @Column()
     source_url: string;
 
+    @Exclude()
     @Column({unique: true})
     url_hash: string;
 

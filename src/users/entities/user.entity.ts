@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { JobApplication } from "src/job_applications/entities/job_application.entity";
 import { MasterProfile } from "src/master_profiles/entities/master_profile.entity";
 import { RecommendedJob } from "src/recommended_jobs/entities/recommended_job.entity";
@@ -22,9 +23,11 @@ export class User {
     @Column({ unique: true })
     email:string;
 
+    @Exclude()
     @Column()
     password:string;
 
+    @Exclude()
     @Column({type:'text', nullable:true,default:null})
     hashedRefreshToken:string | null;
 
@@ -40,9 +43,11 @@ export class User {
     @Column({type:'enum',enum:Role,default:Role.USER})
     role: Role;
 
+    @Exclude()
     @Column({type:'varchar', nullable:true,default:null })
     otpCode:string | null;
 
+    @Exclude()
     @Column({ type:'timestamptz', nullable:true,default:null})
     otpExpiry: Date | null;
 

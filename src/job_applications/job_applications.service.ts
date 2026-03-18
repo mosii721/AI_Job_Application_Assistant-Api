@@ -433,7 +433,7 @@ private async saveVersion(
 
 // SUGGEST RESUME BULLET IMPROVEMENTS - calls AI service
 // SUGGEST RESUME BULLET IMPROVEMENTS - calls AI service
-async suggestBulletImprovements(id: string, bulletIndex: number, experienceIndex: number) {
+async generateExperienceSnapshot(id: string, bulletIndex: number, experienceIndex: number) {
   const application = await this.findOne(id);
 
   const experience = application.tailoredResumeJson.experience;
@@ -555,6 +555,84 @@ async previewPdf(id: string) {
   return {
     resume_data: application.tailoredResumeJson,
     user_name: user.name,
+  };
+}
+
+// GENERATE SUMMARY SNAPSHOT
+async generateSummarySnapshot(id: string) {
+  const application = await this.findOne(id);
+
+  const response = await firstValueFrom(
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/snapshot/generate`, {
+      snapshot_id: crypto.randomUUID(),
+      user_id: application.userId,
+      job_id: application.jobId,
+      section: 'summary',
+      profile_section_data: { summary: application.tailoredResumeJson.summary },
+      job: application.job?.structured_job_json,
+      gap_recommendations: application.matchAnalysisJson?.gap_recommendations ?? [],
+    })
+  );
+
+  return {
+    snapshot_id: response.data.snapshot_id,
+    section: 'summary',
+    original: { summary: application.tailoredResumeJson.summary },
+    suggestion: response.data.suggestion,
+    keywords_to_add: response.data.keywords_to_add,
+    reasoning: response.data.reasoning,
+  };
+}
+
+// GENERATE SKILLS SNAPSHOT
+async generateSkillsSnapshot(id: string) {
+  const application = await this.findOne(id);
+
+  const response = await firstValueFrom(
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/snapshot/generate`, {
+      snapshot_id: crypto.randomUUID(),
+      user_id: application.userId,
+      job_id: application.jobId,
+      section: 'skills',
+      profile_section_data: { skills: application.tailoredResumeJson.skills },
+      job: application.job?.structured_job_json,
+      gap_recommendations: application.matchAnalysisJson?.gap_recommendations ?? [],
+    })
+  );
+
+  return {
+    snapshot_id: response.data.snapshot_id,
+    section: 'skills',
+    original: { skills: application.tailoredResumeJson.skills },
+    suggestion: response.data.suggestion,
+    keywords_to_add: response.data.keywords_to_add,
+    reasoning: response.data.reasoning,
+  };
+}
+
+// GENERATE EDUCATION SNAPSHOT
+async generateEducationSnapshot(id: string) {
+  const application = await this.findOne(id);
+
+  const response = await firstValueFrom(
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/snapshot/generate`, {
+      snapshot_id: crypto.randomUUID(),
+      user_id: application.userId,
+      job_id: application.jobId,
+      section: 'education',
+      profile_section_data: { education: application.tailoredResumeJson.education },
+      job: application.job?.structured_job_json,
+      gap_recommendations: application.matchAnalysisJson?.gap_recommendations ?? [],
+    })
+  );
+
+  return {
+    snapshot_id: response.data.snapshot_id,
+    section: 'education',
+    original: { education: application.tailoredResumeJson.education },
+    suggestion: response.data.suggestion,
+    keywords_to_add: response.data.keywords_to_add,
+    reasoning: response.data.reasoning,
   };
 }
 }

@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { User } from "src/users/entities/user.entity";
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, Relation } from "typeorm";
 
@@ -33,6 +34,7 @@ export class MasterProfile {
             end_date?: string;
         }[]};
 
+    @Exclude()
     @Column('jsonb', { nullable: true })
     resume_embedding: Record<string, number[]>;
 

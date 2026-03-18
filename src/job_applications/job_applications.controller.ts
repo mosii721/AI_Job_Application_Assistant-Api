@@ -142,13 +142,25 @@ export class JobApplicationsController {
   }
 
   // SUGGEST BULLET IMPROVEMENTS
-  @Post(':id/resume/bullets/suggest')
-  @ApiBody({ schema: { properties: { experienceIndex: { type: 'number' }, bulletIndex: { type: 'number' } } } })
-  suggestBulletImprovements(
-    @Param('id') id: string,
-    @Body() body: { experienceIndex: number; bulletIndex: number }
-  ) {
-    return this.jobApplicationsService.suggestBulletImprovements(id, body.bulletIndex, body.experienceIndex);
+  @Post(':id/resume/experience/snapshot')
+  @ApiBody({ schema: { properties: { experienceIndex: { type: 'number' } } } })
+  generateExperienceSnapshot(@Param('id') id: string, @Body() body: { experienceIndex: number; bulletIndex: number }) {
+    return this.jobApplicationsService.generateExperienceSnapshot(id, body.bulletIndex, body.experienceIndex);
+  }
+
+  @Post(':id/resume/summary/snapshot')
+  generateSummarySnapshot(@Param('id') id: string) {
+    return this.jobApplicationsService.generateSummarySnapshot(id);
+  }
+
+  @Post(':id/resume/skills/snapshot')
+  generateSkillsSnapshot(@Param('id') id: string) {
+    return this.jobApplicationsService.generateSkillsSnapshot(id);
+  }
+
+  @Post(':id/resume/education/snapshot')
+  generateEducationSnapshot(@Param('id') id: string) {
+    return this.jobApplicationsService.generateEducationSnapshot(id);
   }
 
   // UPDATE RESUME BULLET

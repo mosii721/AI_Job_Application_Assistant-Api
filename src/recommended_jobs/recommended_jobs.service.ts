@@ -43,12 +43,13 @@ export class RecommendedJobsService {
 
       try {
         // 2. fetch jobs from BrighterMonday and Remotive
-        const [brighterMondayJobs, remotiveJobs] = await Promise.all([
+        const [brighterMondayJobs, remotiveJobs, findworkJobs] = await Promise.all([
           this.fetchFromBrighterMonday(user.preferences),
           this.fetchFromRemotive(user.preferences),
+          this.fetchFromFindwork(user.preferences),
         ]);
 
-        const allFetchedJobs = [...brighterMondayJobs, ...remotiveJobs];
+        const allFetchedJobs = [...brighterMondayJobs, ...remotiveJobs, ...findworkJobs ];
 
         for (const fetchedJob of allFetchedJobs) {
           // 3. check if job already exists using url hash
@@ -61,9 +62,22 @@ export class RecommendedJobsService {
             if (!foundJob) continue;
             job = foundJob;
           } else {
-            const result = await this.jobsService.scrapeAndCreate(fetchedJob.url);
-            job = result.job;
+            try {
+              const result = await this.jobsService.scrapeAndCreate(fetchedJob.url);
+              job = result.job;
+            } catch (error) {
+              // if duplicate insert race condition, try to find the job that was just created
+              if (error.code === '23505') {
+                const duplicate = await this.jobsService.checkDuplicate(fetchedJob.url);
+                if (duplicate.exists && duplicate.job_id) {
+                  job = await this.jobRepository.findOneBy({ id: duplicate.job_id });
+                }
+              } else {
+                console.error(`Failed to scrape job ${fetchedJob.url}:`, error.message);
+                continue;
+              }
           }
+        }
 
           if (!job) continue;
 
@@ -79,19 +93,26 @@ export class RecommendedJobsService {
             continue;
           }
 
-          // 5. call AI for basic match score using embeddings
-          const matchResponse = await firstValueFrom(
-            this.httpService.post(`${process.env.AI_SERVICE_URL}/scoring/match`, {
-              user_id: user.id,
-              job_id: job.id,
-              profile: user.masterProfile?.structured_data_json,
-              job: job.structured_job_json,
-              profile_embeddings: user.masterProfile?.resume_embedding,
-              job_embeddings: job.job_embedding,
-            })
-          );
-          const basicMatchScore = matchResponse.data.overall_score;
+          await new Promise(resolve => setTimeout(resolve, 3000));
 
+          // 5. call AI for basic match score using embeddings
+          let basicMatchScore: number;
+          try {
+            const matchResponse = await firstValueFrom(
+              this.httpService.post(`${process.env.AI_SERVICE_URL}/scoring/match`, {
+                user_id: user.id,
+                job_id: job.id,
+                profile: user.masterProfile?.structured_data_json,
+                job: job.structured_job_json,
+                profile_embeddings: user.masterProfile?.resume_embedding,
+                job_embeddings: job.job_embedding,
+              })
+            );
+            basicMatchScore = matchResponse.data.overall_score;
+          } catch (error) {
+            console.error(`Scoring failed for job ${job.id}, skipping:`, error.message);
+            continue; // skip this job, try next one
+          }
           // 6. save recommendation
           const recommendation = this.recommendedJobRepository.create({
             userId: user.id,
@@ -109,6 +130,33 @@ export class RecommendedJobsService {
     }
 
     console.log('Recommendation cron job completed');
+  }
+
+    // FETCH FROM FINDWORK - free, no API key needed
+  private async fetchFromFindwork(preferences: UserPreference): Promise<{ url: string; source: string }[]> {
+    try {
+      const role = preferences.preferredRoles[0] ?? 'software developer';
+
+      const response = await firstValueFrom(
+        this.httpService.get(`${process.env.FINDWORK_BASE_URL}`, {
+          headers: {
+            Authorization: `Token ${process.env.FINDWORK_API_KEY}`,
+          },
+          params: {
+            search: role,
+            limit: 10,
+          },
+        })
+      );
+
+      return response.data.results.map((job: any) => ({
+        url: job.url,
+        source: 'findwork',
+      }));
+    } catch (error) {
+      console.error('Findwork fetch failed:', error);
+      return [];
+    }
   }
 
   // FETCH FROM BRIGHTERMONDAY - scrapes job listing page using Puppeteer
