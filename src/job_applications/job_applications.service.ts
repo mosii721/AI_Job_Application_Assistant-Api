@@ -433,37 +433,33 @@ private async saveVersion(
 
 // SUGGEST RESUME BULLET IMPROVEMENTS - calls AI service
 // SUGGEST RESUME BULLET IMPROVEMENTS - calls AI service
-async generateExperienceSnapshot(id: string, bulletIndex: number, experienceIndex: number) {
+async generateExperienceSnapshot(id: string) {
   const application = await this.findOne(id);
 
   const experience = application.tailoredResumeJson.experience;
-  if (!experience || !experience[experienceIndex]) {
-    throw new NotFoundException(`Experience at index ${experienceIndex} not found`);
+  if (!experience || experience.length === 0) {
+    throw new NotFoundException(`No experience found for this application`);
   }
 
-  const experienceEntry = experience[experienceIndex];
-
-  // call AI service
   const response = await firstValueFrom(
     this.httpService.post(`${process.env.AI_SERVICE_URL}/snapshot/generate`, {
       snapshot_id: crypto.randomUUID(),
       user_id: application.userId,
       job_id: application.jobId,
       section: 'experience',
-      profile_section_data: experienceEntry,
+      profile_section_data: { experience },
       job: application.job?.structured_job_json,
       gap_recommendations: application.matchAnalysisJson?.gap_recommendations ?? [],
     })
   );
 
   return {
-    original: experienceEntry,
+    snapshot_id: response.data.snapshot_id,
+    section: 'experience',
+    original: { experience },
     suggestion: response.data.suggestion,
     keywords_to_add: response.data.keywords_to_add,
     reasoning: response.data.reasoning,
-    snapshot_id: response.data.snapshot_id,
-    experienceIndex,
-    bulletIndex,
   };
 }
 

@@ -143,9 +143,8 @@ export class JobApplicationsController {
 
   // SUGGEST BULLET IMPROVEMENTS
   @Post(':id/resume/experience/snapshot')
-  @ApiBody({ schema: { properties: { experienceIndex: { type: 'number' } } } })
-  generateExperienceSnapshot(@Param('id') id: string, @Body() body: { experienceIndex: number; bulletIndex: number }) {
-    return this.jobApplicationsService.generateExperienceSnapshot(id, body.bulletIndex, body.experienceIndex);
+  generateExperienceSnapshot(@Param('id') id: string) {
+    return this.jobApplicationsService.generateExperienceSnapshot(id);
   }
 
   @Post(':id/resume/summary/snapshot')
