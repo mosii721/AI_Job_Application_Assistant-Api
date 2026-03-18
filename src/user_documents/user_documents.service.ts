@@ -12,6 +12,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import pdfParse from 'pdf-parse';
 import * as mammoth from 'mammoth';
+import { v2 as cloudinary } from 'cloudinary';
 
 
 
@@ -235,7 +236,6 @@ export class UserDocumentsService {
   // UPLOAD PROFILE PHOTO - POST /upload/photo
   // saves photo and updates user photo_url directly
   async uploadPhoto(userId: string, file: Express.Multer.File) {
-
     if (!file) {
       throw new BadRequestException('File is required');
     }
@@ -243,27 +243,58 @@ export class UserDocumentsService {
     if (file.size > 5 * 1024 * 1024) {
       throw new BadRequestException('File too large (max 5MB)');
     }
-    // 1. check user exists
+
     const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) {
       throw new NotFoundException(`User with id ${userId} not found`);
     }
 
-    // 2. validate file is an image
     const extension = path.extname(file.originalname).toLowerCase();
     if (!['.jpg', '.jpeg', '.png'].includes(extension)) {
       throw new BadRequestException('Only JPG and PNG images are supported');
     }
 
-    // 3. delete old photo if exists
-    if (user.profile_photo) {
+    // configure cloudinary
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
+
+    // delete old photo from cloudinary if exists
+    if (user.profile_photo && user.profile_photo.includes('cloudinary')) {
+      const publicId = user.profile_photo
+        .split('/')
+        .pop()
+        ?.replace(/\.[^/.]+$/, '');
+      if (publicId) {
+        await cloudinary.uploader.destroy(`profile_photos/${publicId}`);
+      }
+    }
+
+    // upload to cloudinary from buffer
+    const uploadResult = await new Promise<any>((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          folder: 'profile_photos',
+          public_id: `${userId}_${Date.now()}`,
+          overwrite: true,
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      ).end(file.buffer);
+    });
+
+    const photoUrl = uploadResult.secure_url;
+
+    // delete old local photo if exists
+    if (user.profile_photo && !user.profile_photo.includes('cloudinary')) {
       this.deleteFile(user.profile_photo);
     }
 
-    // 4. save new photo to local storage
-    const photoUrl = await this.saveFile(file, this.photosDir);
-
-    // 5. update user photo_url directly on user entity
+    // save cloudinary url to user
     await this.userRepository.update(userId, { profile_photo: photoUrl });
 
     return { photo_url: photoUrl };
