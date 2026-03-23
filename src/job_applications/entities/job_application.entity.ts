@@ -3,7 +3,6 @@ import { ApplicationTimeline } from "src/application_timelines/entities/applicat
 import { ApplicationVersion } from "src/application_versions/entities/application_version.entity";
 import { Job } from "src/jobs/entities/job.entity";
 import { SuggestionFeedback } from "src/suggestion_feedbacks/entities/suggestion_feedback.entity";
-
 import { User } from "src/users/entities/user.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation } from "typeorm";
 
@@ -60,22 +59,59 @@ export class JobApplication {
 
     @Column('jsonb')
     tailoredResumeJson: {
-        summary?: string; 
-        skills?: string[]; 
+        summary?: string;
+        skills?: {
+            name: string;
+            category?: string | null;
+            proficiency?: string | null;
+            years?: number | null;
+        }[];
         experience?: {
-            company: string; 
-            job_title: string; 
-            start_date: string;
-            end_date?: string; 
-            description: string;
+            company: string;
+            role: string;
+            start_date?: string;
+            end_date?: string;
+            is_current?: boolean;
+            industry?: string;
+            location?: string;
+            employment_type?: string;
+            bullets?: string[];
+            duration_months?: number;
+            duration_estimated?: boolean;
         }[];
         education?: {
             institution: string;
             degree: string;
-            field_of_study?: string;
-            start_date: string;
-            end_date?: string;
+            field?: string;
+            graduation_year?: number;
+            graduation_year_estimated?: boolean;
+            grade?: string;
+            relevant_coursework?: string[];
         }[];
+        certifications?: {
+            name: string;
+            issuer?: string;
+            year_obtained?: number;
+            expiry_year?: number;
+            credential_id?: string;
+            credential_url?: string;
+        }[];
+        projects?: {
+            name: string;
+            description?: string;
+            role?: string;
+            organization?: string;
+            tech_stack?: string[];
+            outcomes?: string[];
+            url?: string;
+            year?: number;
+        }[];
+        languages?: {
+            language: string;
+            proficiency?: string;
+        }[];
+        personal?: any;
+        extracted_metadata?: any;
 
     };
 

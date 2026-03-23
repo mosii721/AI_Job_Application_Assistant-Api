@@ -114,7 +114,7 @@ export class JobsService {
     const embeddingResponse = await firstValueFrom(
       this.httpService.post(`${process.env.AI_SERVICE_URL}/embeddings/job`, {
         job_id: crypto.randomUUID(),
-        sections: ['responsibilities'],
+        sections: ['skills','responsibilities'],
         data: {
           ...structuredJob,
           skills: structuredJob.required_skills?.map((s: any) => s.skill) ?? [],
@@ -127,7 +127,7 @@ export class JobsService {
     const newJob = this.jobRepository.create({
       title: structuredJob.title,
       company: structuredJob.company,
-      location: structuredJob.location,
+      location: structuredJob.location ?? 'Remote',
       raw_description: rawText,
       structured_job_json: structuredJob,
       job_embedding: jobEmbedding,

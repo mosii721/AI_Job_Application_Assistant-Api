@@ -235,7 +235,11 @@ async generateCoverLetter(id: string, preferences: { tone?: string; length?: str
       job_id: application.jobId,
       profile: masterProfile.structured_data_json,
       job: job.structured_job_json,
-      preferences,
+      preferences: {
+        addressee: 'Hiring Manager',
+        tone: preferences.tone ?? 'professional',
+        length: preferences.length ?? 'medium',
+      },
     })
   );
 
@@ -467,7 +471,7 @@ async generateExperienceSnapshot(id: string) {
 async updateResumeBullet(
   id: string,
   experienceIndex: number,
-  newDescription: string,
+  newBullets: string[],
   action: SuggestionAction,
   originalContent: string,
   suggestedContent: string,
@@ -483,7 +487,7 @@ async updateResumeBullet(
 
     currentExperience[experienceIndex] = {
       ...currentExperience[experienceIndex],
-      description: newDescription,
+      bullets: newBullets,
     };
 
     await this.jobApplicationRepository.update(id, {
@@ -494,7 +498,7 @@ async updateResumeBullet(
     });
 
     // save version snapshot
-    await this.saveVersion(id, ContentType.RESUME_BULLET, newDescription, CreatedBy.AI_REFINEMENT);
+    await this.saveVersion(id, ContentType.RESUME_BULLET, JSON.stringify(newBullets), CreatedBy.AI_REFINEMENT);
   }
 
   // save feedback regardless of action - AI uses this to learn
@@ -629,6 +633,92 @@ async generateEducationSnapshot(id: string) {
     suggestion: response.data.suggestion,
     keywords_to_add: response.data.keywords_to_add,
     reasoning: response.data.reasoning,
+  };
+}
+
+// RESCORE APPLICATION - calls AI service after sections approved
+async rescoreApplication(id: string, approvedSections: any) {
+  const application = await this.findOne(id);
+  const job = await this.jobRepository.findOneBy({ id: application.jobId });
+  const masterProfile = await this.masterProfileRepository.findOneBy({ userId: application.userId });
+
+  const response = await firstValueFrom(
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/scoring/rescore`, {
+      user_id: application.userId,
+      job_id: application.jobId,
+      approved_sections: approvedSections,
+      job: job?.structured_job_json,
+      profile_embeddings: masterProfile?.resume_embedding,
+      job_embeddings: job?.job_embedding,
+    })
+  );
+
+  await this.jobApplicationRepository.update(id, {
+    overallMatchScore: response.data.overall_score,
+    skillScore: response.data.breakdown?.skills ?? 0,
+    experienceScore: response.data.breakdown?.experience ?? 0,
+    educationScore: response.data.breakdown?.seniority ?? 0,
+    matchAnalysisJson: response.data,
+  });
+
+  return response.data;
+}
+
+// SUGGEST BULLET TEMPLATES - calls AI service
+async suggestBulletTemplates(id: string, experienceIndex: number) {
+  const application = await this.findOne(id);
+  const experience = application.tailoredResumeJson.experience;
+
+  if (!experience || !experience[experienceIndex]) {
+    throw new NotFoundException(`Experience at index ${experienceIndex} not found`);
+  }
+
+  const entry = experience[experienceIndex];
+
+  const response = await firstValueFrom(
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/snapshot/suggest-bullets`, {
+      user_id: application.userId,
+      job_id: application.jobId,
+      role: entry.role,
+      company: entry.company,
+      existing_bullets: entry.bullets ?? [],
+      job: application.job?.structured_job_json,
+    })
+  );
+
+  return response.data;
+}
+
+// REFINE SNAPSHOT - calls AI service based on user instruction
+async refineSnapshot(id: string, section: string, currentSuggestion: any, instruction: string, preferences?: any) {
+  const application = await this.findOne(id);
+
+  const response = await firstValueFrom(
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/snapshot/refine`, {
+      snapshot_id: crypto.randomUUID(),
+      user_id: application.userId,
+      job_id: application.jobId,
+      section,
+      current_suggestion: currentSuggestion,
+      instruction,
+      preferences: {
+        formality: preferences?.formality ?? 'professional',
+        length: preferences?.length ?? 'medium',
+        focus: preferences?.focus ?? null,
+      },
+      job: application.job?.structured_job_json,
+    })
+  );
+
+  return {
+    snapshot_id: response.data.snapshot_id,
+    section: response.data.section,
+    original: response.data.original,
+    suggestion: response.data.suggestion,
+    keywords_to_add: response.data.keywords_to_add,
+    reasoning: response.data.reasoning,
+    section_insight: response.data.section_insight,
+    version: response.data.version,
   };
 }
 }

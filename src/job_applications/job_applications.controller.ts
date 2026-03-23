@@ -164,12 +164,12 @@ export class JobApplicationsController {
 
   // UPDATE RESUME BULLET
   @Patch(':id/resume/bullets')
-  @ApiBody({ schema: { properties: { experienceIndex: { type: 'number' }, newDescription: { type: 'string' }, action: { type: 'string', enum: Object.values(SuggestionAction) }, originalContent: { type: 'string' }, suggestedContent: { type: 'string' } } } })
+  @ApiBody({ schema: { properties: { experienceIndex: { type: 'number' }, newBullets: { type: 'array', items: { type: 'string' } }, action: { type: 'string', enum: Object.values(SuggestionAction) }, originalContent: { type: 'string' }, suggestedContent: { type: 'string' } } } })
   updateResumeBullet(
     @Param('id') id: string,
     @Body() body: { 
       experienceIndex: number;
-      newDescription: string;
+      newBullets: string[];
       action: SuggestionAction;
       originalContent: string;
       suggestedContent: string;
@@ -178,7 +178,7 @@ export class JobApplicationsController {
     return this.jobApplicationsService.updateResumeBullet(
       id,
       body.experienceIndex,
-      body.newDescription,
+      body.newBullets,
       body.action,
       body.originalContent,
       body.suggestedContent,
@@ -201,6 +201,47 @@ export class JobApplicationsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.jobApplicationsService.remove(id);
+  }
+
+    // RESCORE APPLICATION
+  @Post(':id/rescore')
+  @ApiBody({ schema: { properties: { approved_sections: { type: 'object' } } } })
+  rescoreApplication(
+    @Param('id') id: string,
+    @Body() body: { approved_sections: any }
+  ) {
+    return this.jobApplicationsService.rescoreApplication(id, body.approved_sections);
+  }
+
+  // SUGGEST BULLET TEMPLATES
+  @Post(':id/resume/experience/suggest-bullets')
+  @ApiBody({ schema: { properties: { experienceIndex: { type: 'number' } } } })
+  suggestBulletTemplates(
+    @Param('id') id: string,
+    @Body() body: { experienceIndex: number }
+  ) {
+    return this.jobApplicationsService.suggestBulletTemplates(id, body.experienceIndex);
+  }
+
+  // REFINE SNAPSHOT
+  @Post(':id/resume/snapshot/refine')
+  @ApiBody({ schema: { properties: { 
+    section: { type: 'string' }, 
+    current_suggestion: { type: 'object' }, 
+    instruction: { type: 'string' },
+    preferences: { type: 'object' }
+  } } })
+  refineSnapshot(
+    @Param('id') id: string,
+    @Body() body: { section: string; current_suggestion: any; instruction: string; preferences?: any }
+  ) {
+    return this.jobApplicationsService.refineSnapshot(
+      id, 
+      body.section, 
+      body.current_suggestion, 
+      body.instruction, 
+      body.preferences
+    );
   }
 
   

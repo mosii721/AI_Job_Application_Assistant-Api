@@ -1,11 +1,15 @@
 import { Type } from "class-transformer";
-import { IsArray, IsEnum, IsNumber, IsObject, IsOptional, IsString, IsUrl, ValidateNested } from "class-validator";
-import { ApplicationMethod, JobType, Seniority, WorkMode } from "../entities/job.entity";
+import { IsArray, IsNumber, IsObject, IsOptional, IsString, IsUrl, ValidateNested } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 
 
 export class JobDto {
+    @ApiProperty({ description: 'URL of the job posting' })
+    @IsOptional() 
+    @IsString()
+    url?: string;
+
     @ApiProperty({ description: 'Job title' })
     @IsString()
     title: string;
@@ -15,49 +19,149 @@ export class JobDto {
     company: string;
 
     @ApiProperty({ description: 'Location of the job' })
+    @IsOptional() 
     @IsString()
-    location: string;
+    location?: string;
 
-    @ApiProperty({ description: 'Seniority level required for the job (e.g. junior, mid, senior)' })
-    @IsEnum(Seniority)
-    seniority: Seniority;
+    @ApiProperty({ description: 'Work mode - remote, onsite, hybrid' })
+    @IsOptional() 
+    @IsString()
+    mode?: string;
 
-    @ApiProperty({ description: 'Work mode for the job (e.g. remote, onsite, hybrid)' })
-    @IsEnum(WorkMode)
-    mode: WorkMode; // remote, onsite, hybrid
+    @ApiProperty({ description: 'Seniority level - internship, junior, mid, senior, lead, executive' })
+    @IsOptional() 
+    @IsString()
+    seniority?: string;
 
-    @ApiProperty({ description: 'Type of job (e.g. full-time, part-time, contract, internship, freelance)' })
-    @IsEnum(JobType)
-    job_type: JobType; // full_time, part_time, contract, internship, freelance
+    @ApiProperty({ description: 'Employment type - full_time, part_time, contract, internship, freelance' })
+    @IsOptional() 
+    @IsString()
+    employment_type?: string;
 
-    @ApiProperty({ description: 'List of required skills for the job' })
+    @ApiProperty({ description: 'Industry the job belongs to' })
+    @IsOptional() 
+    @IsString()
+    industry?: string;
+
+    @ApiProperty({ description: 'Salary range for the job' })
+    @IsOptional()
+    salary?: {
+        min?: number;
+        max?: number;
+        currency?: string;
+        period?: string;
+    };
+
+    @ApiProperty({ description: 'List of required skills with priority (must_have or nice_to_have)' })
+    @IsOptional() 
     @IsArray()
-    @IsString({ each: true })
-    required_skills: string[];
+    required_skills?: { skill: string; priority: string }[];
 
     @ApiProperty({ description: 'List of job responsibilities' })
+    @IsOptional() 
     @IsArray()
-    @IsString({ each: true })
-    responsibilities: string[];
+    responsibilities?: string[];
 
-    @ApiProperty({ description: 'Application method for the job (e.g. email, portal, both)' })
-    @IsEnum(ApplicationMethod)
-    application_method: ApplicationMethod; // email, portal, both
+    @ApiProperty({ description: 'List of key qualifications required' })
+    @IsOptional() 
+    @IsArray()
+    key_qualifications?: string[];
 
-    @ApiProperty({ description: 'If application method includes email, the email address to send applications to' })
-    @IsOptional()
+    @ApiProperty({ description: 'List of role requirements' })
+    @IsOptional() 
+    @IsArray()
+    requirements?: string[];
+
+    @ApiProperty({ description: 'Number of years of experience required' })
+    @IsOptional() 
+    @IsNumber()
+    required_experience_years?: number;
+
+    @ApiProperty({ description: 'How to apply - email, url, or both' })
+    @IsOptional() 
+    @IsString()
+    application_method?: string;
+
+    @ApiProperty({ description: 'Email address to send applications to' })
+    @IsOptional() 
     @IsString()
     application_email?: string;
 
-    @ApiProperty({ description: 'Deadline for the job application (if any)' })
-    @IsOptional()
+    @ApiProperty({ description: 'URL to apply for the job' })
+    @IsOptional() 
+    @IsString()
+    application_url?: string;
+
+    @ApiProperty({ description: 'Application deadline' })
+    @IsOptional() 
     @IsString()
     deadline?: string;
 
-    @ApiProperty({ description: 'Number of years of experience required for the job (if specified)' })
+    @ApiProperty({ description: 'About the company' })
+    @IsOptional() 
+    @IsString()
+    about_company?: string;
+
+    @ApiProperty({ description: 'Size of the company - small, medium, large' })
+    @IsOptional() 
+    @IsString()
+    company_size?: string;
+
+    @ApiProperty({ description: 'Core values of the company' })
+    @IsOptional() 
+    @IsArray()
+    company_values?: string[];
+
+    @ApiProperty({ description: 'Why join this company' })
+    @IsOptional() 
+    @IsString()
+    why_join?: string;
+
+    @ApiProperty({ description: 'Department the role belongs to' })
+    @IsOptional() 
+    @IsString()
+    department?: string;
+
+    @ApiProperty({ description: 'Who the role reports to' })
+    @IsOptional() 
+    @IsString()
+    reporting_to?: string;
+
+    @ApiProperty({ description: 'Work arrangement details' })
+    @IsOptional() 
+    @IsString()
+    work_arrangement?: string;
+
+    @ApiProperty({ description: 'List of benefits offered' })
+    @IsOptional() 
+    @IsArray()
+    benefits?: string[];
+
+    @ApiProperty({ description: 'Payment schedule' })
+    @IsOptional() 
+    @IsString()
+    payment_schedule?: string;
+
+    @ApiProperty({ description: 'Probation period details' })
+    @IsOptional() 
+    @IsString()
+    probation_period?: string;
+
+    @ApiProperty({ description: 'Whether the company is an equal opportunity employer' })
     @IsOptional()
-    @IsNumber()
-    required_experience_years?: number;
+    equal_opportunity?: boolean;
+
+    @ApiProperty({ description: 'Whether visa sponsorship is available' })
+    @IsOptional()
+    visa_sponsorship?: boolean;
+
+    @ApiProperty({ description: 'Whether relocation support is available' })
+    @IsOptional()
+    relocation_support?: boolean;
+
+    @ApiProperty({ description: 'Whether the job is publicly listed' })
+    @IsOptional()
+    is_public?: boolean;
 }
 
 export class CreateJobDto {

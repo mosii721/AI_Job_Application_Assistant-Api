@@ -3,45 +3,73 @@ import { Type } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class ExperienceDto {
-    @ApiProperty({ description: 'Name of the company where the experience took place' })
     @IsString()
     company: string;
 
-    @ApiProperty({ description: 'Job title held during the experience' })
     @IsString()
-    job_title: string;
+    role: string;
 
-    @ApiProperty({ description: 'Start date of the experience' })
+    @IsOptional() 
     @IsString()
-    start_date: string;
+    start_date?: string;
 
-    @ApiProperty({ description: 'End date of the experience (if applicable)' })
-    @IsOptional()
+    @IsOptional() 
     @IsString()
     end_date?: string;
 
-    @ApiProperty({ description: 'Description of the experience, including key responsibilities and achievements' })
+    @IsOptional()
+    is_current?: boolean;
+
+    @IsOptional() 
     @IsString()
-    description: string;
+    industry?: string;
+
+    @IsOptional() 
+    @IsString()
+    location?: string;
+
+    @IsOptional() 
+    @IsString()
+    employment_type?: string;
+
+    @IsOptional() 
+    @IsArray()
+    bullets?: string[];
+
+    @IsOptional() 
+    @IsNumber()
+    duration_months?: number;
+
+    @IsOptional()
+    duration_estimated?: boolean;
 }
 
 export class EducationDto {
-    @ApiProperty({ description: 'Name of the educational institution' })
     @IsString()
     institution: string;
 
-    @ApiProperty({ description: 'Degree or certification obtained' })
     @IsString()
-    degree: string;
+    @IsOptional() 
+    degree?: string;
 
-    @ApiProperty({ description: 'Start date of the education period' })
+    @IsOptional() 
     @IsString()
-    start_date: string;
+    field?: string;
 
-    @ApiProperty({ description: 'End date of the education period (if applicable)' })
+    @IsOptional() 
+    @IsNumber()
+    graduation_year?: number;
+
     @IsOptional()
+    graduation_year_estimated?: boolean;
+
+    @IsOptional() 
     @IsString()
-    end_date?: string;
+    grade?: string;
+
+    @IsOptional() 
+    @IsArray()
+    relevant_coursework?: string[];
 }
 
 export class MasterProfileDto {
@@ -68,6 +96,37 @@ export class MasterProfileDto {
     @ValidateNested({ each: true })
     @Type(() => EducationDto)
     education?: EducationDto[];
+
+    @IsOptional() 
+    @IsArray()
+    certifications?: any[];
+
+    @IsOptional() 
+    @IsArray()
+    projects?: any[];
+
+    @IsOptional() 
+    @IsArray()
+    languages?: any[];
+
+    @IsOptional() 
+    @IsArray()
+    volunteer?: any[];
+
+    @IsOptional() 
+    @IsArray()
+    publications?: any[];
+
+    @IsOptional() 
+    @IsArray()
+    awards?: any[];
+
+    @IsOptional() 
+    @IsArray()
+    references?: any[];
+
+    @IsOptional()
+    personal?: any;
 }
 
 

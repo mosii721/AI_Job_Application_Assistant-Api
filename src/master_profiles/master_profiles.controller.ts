@@ -45,14 +45,20 @@ export class MasterProfilesController {
   @Post(':userId/experience')
   @ApiBody({ schema: { properties: { 
     company: { type: 'string' }, 
-    job_title: { type: 'string' }, 
+    role: { type: 'string' }, 
     start_date: { type: 'string' }, 
-    end_date: { type: 'string' }, 
-    description: { type: 'string' } 
+    end_date: { type: 'string' },
+    is_current: { type: 'boolean' },
+    industry: { type: 'string' },
+    location: { type: 'string' },
+    employment_type: { type: 'string' },
+    bullets: { type: 'array', items: { type: 'string' } },
+    duration_months: { type: 'number' },
+    duration_estimated: { type: 'boolean' }
   } } })
   addExperience(
     @Param('userId') userId: string,
-    @Body() body: { company: string; job_title: string; start_date: string; end_date?: string; description: string }
+    @Body() body: { company: string; role: string; start_date?: string; end_date?: string; is_current?: boolean; industry?: string; location?: string; employment_type?: string; bullets?: string[]; duration_months?: number; duration_estimated?: boolean }
   ) {
     return this.masterProfilesService.addExperience(userId, body);
   }
@@ -61,15 +67,21 @@ export class MasterProfilesController {
   @Patch(':userId/experience/:index')
   @ApiBody({ schema: { properties: { 
     company: { type: 'string' }, 
-    job_title: { type: 'string' }, 
+    role: { type: 'string' }, 
     start_date: { type: 'string' }, 
-    end_date: { type: 'string' }, 
-    description: { type: 'string' } 
+    end_date: { type: 'string' },
+    is_current: { type: 'boolean' },
+    industry: { type: 'string' },
+    location: { type: 'string' },
+    employment_type: { type: 'string' },
+    bullets: { type: 'array', items: { type: 'string' } },
+    duration_months: { type: 'number' },
+    duration_estimated: { type: 'boolean' }
   } } })
   updateExperience(
     @Param('userId') userId: string,
     @Param('index') index: string,
-    @Body() body: { company?: string; job_title?: string; start_date?: string; end_date?: string; description?: string }
+    @Body() body: { company?: string; role?: string; start_date?: string; end_date?: string; is_current?: boolean; industry?: string; location?: string; employment_type?: string; bullets?: string[]; duration_months?: number; duration_estimated?: boolean }
   ) {
     return this.masterProfilesService.updateExperience(userId, parseInt(index), body);
   }
@@ -87,13 +99,16 @@ export class MasterProfilesController {
   @Post(':userId/education')
   @ApiBody({ schema: { properties: { 
     institution: { type: 'string' }, 
-    degree: { type: 'string' }, 
-    start_date: { type: 'string' }, 
-    end_date: { type: 'string' } 
+    degree: { type: 'string' },
+    field: { type: 'string' },
+    graduation_year: { type: 'number' },
+    graduation_year_estimated: { type: 'boolean' },
+    grade: { type: 'string' },
+    relevant_coursework: { type: 'array', items: { type: 'string' } }
   } } })
   addEducation(
     @Param('userId') userId: string,
-    @Body() body: { institution: string; degree: string; start_date: string; end_date?: string }
+    @Body() body: { institution: string; degree: string; field?: string; graduation_year?: number; graduation_year_estimated?: boolean; grade?: string; relevant_coursework?: string[] }
   ) {
     return this.masterProfilesService.addEducation(userId, body);
   }
@@ -102,14 +117,17 @@ export class MasterProfilesController {
   @Patch(':userId/education/:index')
   @ApiBody({ schema: { properties: { 
     institution: { type: 'string' }, 
-    degree: { type: 'string' }, 
-    start_date: { type: 'string' }, 
-    end_date: { type: 'string' } 
+    degree: { type: 'string' },
+    field: { type: 'string' },
+    graduation_year: { type: 'number' },
+    graduation_year_estimated: { type: 'boolean' },
+    grade: { type: 'string' },
+    relevant_coursework: { type: 'array', items: { type: 'string' } }
   } } })
   updateEducation(
     @Param('userId') userId: string,
     @Param('index') index: string,
-    @Body() body: { institution?: string; degree?: string; start_date?: string; end_date?: string }
+    @Body() body: { institution: string; degree?: string; field?: string; graduation_year?: number; graduation_year_estimated?: boolean; grade?: string; relevant_coursework?: string[]  }
   ) {
     return this.masterProfilesService.updateEducation(userId, parseInt(index), body);
   }
@@ -145,13 +163,16 @@ export class MasterProfilesController {
     location: { type: 'string' },
     email: { type: 'string' },
     phone: { type: 'string' },
+    nationality: { type: 'string' },
     linkedin: { type: 'string' },
-    photo_url: { type: 'string' },
-    portfolio: { type: 'string' }
+    github: { type: 'string' },
+    portfolio: { type: 'string' },
+    website: { type: 'string' },
+    photo_url: { type: 'string' }
   } } })
   updatePersonal(
     @Param('userId') userId: string,
-    @Body() body: { name?: string; location?: string; email?: string; phone?: string;linkedin?: string;    photo_url?: string;portfolio?: string; }
+    @Body() body: { name?: string; location?: string; email?: string; phone?: string; nationality?: string; linkedin?: string; github?: string; portfolio?: string; website?: string; photo_url?: string }
   ) {
     return this.masterProfilesService.updatePersonal(userId, body);
   }

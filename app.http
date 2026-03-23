@@ -1,7 +1,7 @@
 @url1 = https://ai-job-application-assistant-api.onrender.com/api/v1
 @url = http://localhost:5000/api/v1
 
-@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzczODcwMDk2LCJleHAiOjE3NzM4NzI3OTZ9.pO6AUeU62rhr8qlvGoC3owYz3NUPX1x6QtM5WIZ-oQI
+@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0MjYxNzI2LCJleHAiOjE3NzQyNjQ0MjZ9.1uHDCWGiaJet-72uv-4MGskiIBcR5vAkhef8LFKxtKI
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
 idUser = c145911f-a878-4c9a-9d9b-00adfb2c50b6
 jobid = ef315272-8fb1-4964-9a1a-aa617b58c259
@@ -338,10 +338,61 @@ Content-Type: application/json
 
 {
   "experienceIndex": 0,
-  "newDescription": "Led development of scalable REST APIs serving 10k+ daily users",
+  "newBullets": ["Led development of scalable REST APIs serving 10k+ daily users"],
   "action": "accept",
   "originalContent": "Developed REST APIs",
   "suggestedContent": "Led development of scalable REST APIs serving 10k+ daily users"
+}
+
+# rescore application
+###
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/rescore
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "approved_sections": {
+    "skills": {
+      "skills": [
+        { "name": "React", "category": "framework", "relevance": "must_have", "keep": true },
+        { "name": "NestJS", "category": "framework", "relevance": "must_have", "keep": true }
+      ]
+    },
+    "summary": {
+      "suggestion": "Backend developer with expertise in NestJS and PostgreSQL."
+    }
+  }
+}
+
+# suggest bullet templates
+###
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/resume/experience/suggest-bullets
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "experienceIndex": 0
+}
+
+# refine snapshot
+###
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/resume/snapshot/refine
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "section": "skills",
+  "current_suggestion": {
+    "skills": [
+      { "name": "React", "category": "framework", "relevance": "must_have", "keep": true }
+    ]
+  },
+  "instruction": "Keep React — I use it for backend templating",
+  "preferences": {
+    "formality": "professional",
+    "length": "medium",
+    "focus": null
+  }
 }
 
 # generate pdf
@@ -473,7 +524,15 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "location": "Kutus"
+  "name": "Mike Kiprop",
+  "location": "Nairobi",
+  "email": "mikealwanga97@gmail.com",
+  "phone": "0733031821",
+  "nationality": "Kenyan",
+  "linkedin": "https://linkedin.com/in/mikealwanga",
+  "github": "https://github.com/mikealwanga",
+  "portfolio": "https://mikealwanga.dev",
+  "website": "https://mikealwanga.dev"
 }
 
 //get skills
@@ -489,10 +548,16 @@ Content-Type: application/json
 
 {
   "company": "Google",
-  "job_title": "Software Engineer",
+  "role": "Software Engineer",
   "start_date": "2022-01-01",
   "end_date": "2023-01-01",
-  "description": "Worked on backend systems using Spring Boot and JAVA"
+  "is_current": false,
+  "industry": "Technology",
+  "location": "Nairobi",
+  "employment_type": "full_time",
+  "bullets": ["Built REST APIs using Spring Boot", "Led a team of 5 developers"],
+  "duration_months": 12,
+  "duration_estimated": false
 }
 
 //update experience by index
@@ -502,7 +567,8 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "job_title": "Senior Software Engineer"
+  "role": "Senior Software Engineer",
+  "bullets": ["Led development of scalable REST APIs", "Mentored junior developers"]
 }
 
 //remove experience
@@ -518,9 +584,12 @@ Content-Type: application/json
 
 {
   "institution": "University of Nairobi",
-  "degree": "BSc Computer Science",
-  "start_date": "2018-01-01",
-  "end_date": "2022-01-01"
+  "degree": "BSc",
+  "field": "Computer Science",
+  "graduation_year": 2022,
+  "graduation_year_estimated": false,
+  "grade": "Second Class Upper",
+  "relevant_coursework": ["Data Structures", "Algorithms"]
 }
 
 // update  education by index
@@ -530,7 +599,8 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "degree": "BSc Criminology"
+  "degree": "Bachelor of Science",
+  "field": "Software Engineering"
 }
 
 //remove education

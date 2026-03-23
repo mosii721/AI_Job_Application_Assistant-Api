@@ -161,10 +161,16 @@ export class MasterProfilesService {
   // ADD EXPERIENCE - POST /master-profile/:userId/experience
   async addExperience(userId: string, experience: {
     company: string;
-    job_title: string;
-    start_date: string;
+    role: string;
+    start_date?: string;
     end_date?: string;
-    description: string;
+    is_current?: boolean;
+    industry?: string;
+    location?: string;
+    employment_type?: string;
+    bullets?: string[];
+    duration_months?: number;
+    duration_estimated?: boolean;
   }) {
     const profile = await this.findByUserId(userId);
 
@@ -186,10 +192,16 @@ export class MasterProfilesService {
   // UPDATE EXPERIENCE - PATCH /master-profile/:userId/experience/:index
   async updateExperience(userId: string, index: number, experience: {
     company?: string;
-    job_title?: string;
+    role?: string;
     start_date?: string;
     end_date?: string;
-    description?: string;
+    is_current?: boolean;
+    industry?: string;
+    location?: string;
+    employment_type?: string;
+    bullets?: string[];
+    duration_months?: number;
+    duration_estimated?: boolean;
   }) {
     const profile = await this.findByUserId(userId);
 
@@ -239,9 +251,12 @@ export class MasterProfilesService {
   // ADD EDUCATION - POST /master-profile/:userId/education
   async addEducation(userId: string, education: {
     institution: string;
-    degree: string;
-    start_date: string;
-    end_date?: string;
+    degree?: string;
+    field?: string;
+    graduation_year?: number;
+    graduation_year_estimated?: boolean;
+    grade?: string;
+    relevant_coursework?: string[];
   }) {
     const profile = await this.findByUserId(userId);
 
@@ -262,10 +277,13 @@ export class MasterProfilesService {
 
   // UPDATE EDUCATION - PATCH /master-profile/:userId/education/:index
   async updateEducation(userId: string, index: number, education: {
-    institution?: string;
+    institution: string;
     degree?: string;
-    start_date?: string;
-    end_date?: string;
+    field?: string;
+    graduation_year?: number;
+    graduation_year_estimated?: boolean;
+    grade?: string;
+    relevant_coursework?: string[];
   }) {
     const profile = await this.findByUserId(userId);
 
@@ -351,9 +369,12 @@ async replaceProfile(userId: string, updateMasterProfileDto: UpdateMasterProfile
     location?: string;
     email?: string;
     phone?: string;
+    nationality?: string;
     linkedin?: string;
-    photo_url?: string;
+    github?: string;
     portfolio?: string;
+    website?: string;
+    photo_url?: string;
   }) {
     const profile = await this.findByUserId(userId);
 

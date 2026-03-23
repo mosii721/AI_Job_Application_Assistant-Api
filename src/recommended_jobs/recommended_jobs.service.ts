@@ -144,7 +144,7 @@ export class RecommendedJobsService {
           },
           params: {
             search: role,
-            limit: 10,
+            limit: 5,
           },
         })
       );
@@ -199,27 +199,25 @@ export class RecommendedJobsService {
   // FETCH FROM REMOTIVE - API call for remote jobs
   private async fetchFromRemotive(preferences: UserPreference): Promise<{ url: string; source: string }[]> {
     try {
-      const role = preferences.preferredRoles[0] ?? 'software developer';
-      console.log('Fetching from Remotive with role:', role);
-      console.log('Remotive URL:', process.env.REMOTIVE_BASE_URL);
-
       const response = await firstValueFrom(
         this.httpService.get(`${process.env.REMOTIVE_BASE_URL}`, {
           params: {
-            search: role,
-            limit: 10,
+            limit: 5,
           },
         })
       );
 
       console.log('Remotive response jobs count:', response.data.jobs?.length);
 
-      return response.data.jobs.map((job: any) => ({
-        url: job.url,
-        source: 'remotive',
-      }));
+      return response.data.jobs
+        .filter((job: any) => job.url)
+        .slice(0, 5)
+        .map((job: any) => ({
+          url: job.url,
+          source: 'remotive',
+        }));
     } catch (error) {
-      console.error('Remotive fetch failed:', error);
+      console.error('Remotive fetch failed:', error.message);
       return [];
     }
   }
