@@ -117,10 +117,15 @@ export class JobApplicationsController {
 
   // GENERATE EMAIL
   @Post(':id/email')
-  @ApiBody({ schema: { properties: { tone: { type: 'string' }, include_cover_letter: { type: 'boolean' } } } })
+  @ApiBody({ schema: { properties: { 
+    tone: { type: 'string' }, 
+    include_cover_letter: { type: 'boolean' },
+    email_type: { type: 'string', enum: ['short_intro', 'cover_letter_format', 'follow_up', 'cold_outreach'] },
+    verbosity: { type: 'string', enum: ['low', 'medium', 'high'] }
+  } } })
   generateEmail(
     @Param('id') id: string,
-    @Body() body: { tone?: string; include_cover_letter?: boolean }
+    @Body() body: { tone?: string; include_cover_letter?: boolean; email_type?: string; verbosity?: string }
   ) {
     return this.jobApplicationsService.generateEmail(id, body);
   }

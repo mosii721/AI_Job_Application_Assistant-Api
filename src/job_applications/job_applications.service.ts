@@ -329,7 +329,7 @@ async revertCoverLetter(id: string, version: number) {
 }
 
 // GENERATE EMAIL - calls AI service
-async generateEmail(id: string, options: { tone?: string; include_cover_letter?: boolean }) {
+async generateEmail(id: string, options: { tone?: string; include_cover_letter?: boolean; email_type?: string; verbosity?: string }) {
   const application = await this.findOne(id);
   const job = await this.jobRepository.findOneBy({ id: application.jobId });
   const user = await this.userRepository.findOneBy({ id: application.userId });
@@ -354,11 +354,12 @@ async generateEmail(id: string, options: { tone?: string; include_cover_letter?:
       job: job.structured_job_json,
       cover_letter: options.include_cover_letter ? application.coverLetterCurrent : null,
       preferences: {
-        email_type: 'short_intro',
-        tone: options.tone ?? 'professional',
-        addressee: 'Hiring Manager',
-        include_subject: true,
-      },
+      email_type: options.email_type ?? 'short_intro',
+      tone: options.tone ?? 'professional',
+      addressee: 'Hiring Manager',
+      include_subject: true,
+    },
+    verbosity: options.verbosity ?? 'low',
     })
   );
 
