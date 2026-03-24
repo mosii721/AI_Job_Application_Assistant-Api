@@ -28,7 +28,7 @@ export class RecommendedJobsService {
   ) {}
 
   // CRON JOB - runs every 6 hours
-  @Cron(CronExpression.EVERY_6_HOURS)
+  @Cron(CronExpression.EVERY_6_HOURS, { disabled: true })
   async fetchAndRecommendJobs() {
     console.log('Running recommendation cron job...');
 

@@ -117,7 +117,10 @@ export class JobsService {
         sections: ['skills','responsibilities'],
         data: {
           ...structuredJob,
-          skills: structuredJob.required_skills?.map((s: any) => s.skill) ?? [],
+          skills: structuredJob.required_skills?.map((s: any) => ({
+            name: s.name,
+            category: s.priority,
+          })) ?? [],
         },
       })
     );

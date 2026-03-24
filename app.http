@@ -1,7 +1,7 @@
 @url1 = https://ai-job-application-assistant-api.onrender.com/api/v1
 @url = http://localhost:5000/api/v1
 
-@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0MjYxNzI2LCJleHAiOjE3NzQyNjQ0MjZ9.1uHDCWGiaJet-72uv-4MGskiIBcR5vAkhef8LFKxtKI
+@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0MzU3NDgwLCJleHAiOjE3NzQzNjAxODB9.KlNhnP8EpMmj4ktld1yM4aH59jrxrE6MpMpoEG0uYNM
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
 idUser = c145911f-a878-4c9a-9d9b-00adfb2c50b6
 jobid = ef315272-8fb1-4964-9a1a-aa617b58c259
@@ -191,7 +191,7 @@ Authorization: Bearer {{accessToken}}
 
 {
   "userId": "c145911f-a878-4c9a-9d9b-00adfb2c50b6",
-  "jobId": "ef315272-8fb1-4964-9a1a-aa617b58c259"
+  "jobId": "94291e67-a593-4ae2-8e9b-c9fcd8d2796b"
 }
 
 ###
@@ -416,7 +416,7 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "url": "https://remoteok.com/remote-jobs/remote-senior-fullstack-developer-kodify-media-group-1130526"
+  "url": "https://remoteok.com/remote-jobs/remote-security-engineer-ii-canada-nerdwallet-1130860"
 }
 
 //check duplicates
