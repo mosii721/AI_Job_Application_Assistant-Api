@@ -1,7 +1,7 @@
 @url1 = https://ai-job-application-assistant-api.onrender.com/api/v1
 @url = http://localhost:5000/api/v1
 
-@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0MzgzODI2LCJleHAiOjE3NzQzODY1MjZ9.y5_y0D2Ho_gHQ9K-66c0ODBrVatd2VTu1H7UWUTdVTo
+@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0NDc0Njc3LCJleHAiOjE3NzQ0NzczNzd9.gCpZmn-4m7QRX0dm5vqjmA38Og1knO9hRKgQv04SfO4
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
 idUser = c145911f-a878-4c9a-9d9b-00adfb2c50b6
 jobid = ef315272-8fb1-4964-9a1a-aa617b58c259
@@ -251,6 +251,7 @@ Content-Type: application/json
 {
   "tone": "professional",
   "length": "medium",
+  "addressee" : "HR",
   "emphasize": ["leadership", "full stack web development"]
 }
 //update cover letter content manually
@@ -293,7 +294,8 @@ Content-Type: application/json
   "tone": "professional",
   "include_cover_letter": false,
   "email_type": "short_intro",
-  "verbosity": "low"
+  "verbosity": "low",
+  "addressee" : "HR"
 }
 
 // update email manually

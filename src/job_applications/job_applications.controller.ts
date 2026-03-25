@@ -4,6 +4,7 @@ import { ApplicationStatus } from './entities/job_application.entity';
 import { SuggestionAction } from 'src/suggestion_feedbacks/entities/suggestion_feedback.entity';
 import { UpdateJobApplicationDto } from './dto/update-job_application.dto';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { add } from 'cheerio/dist/commonjs/api/traversing';
 
 @ApiTags('job-applications')
 @ApiBearerAuth()
@@ -73,13 +74,14 @@ export class JobApplicationsController {
 
   // GENERATE COVER LETTER
   @Post(':id/cover-letter')
-  @ApiBody({ schema: { properties: { tone: { type: 'string' }, length: { type: 'string' }, emphasize: { type: 'array', items: { type: 'string' } } } } })
+  @ApiBody({ schema: { properties: { tone: { type: 'string' },addressee: { type: 'string', default: 'Hiring Manager' }, length: { type: 'string' }, emphasize: { type: 'array', items: { type: 'string' } } } } })
   generateCoverLetter(
     @Param('id') id: string,
     @Body() body: { 
       tone?: string; 
       length?: string; 
-      emphasize?: string[] 
+      emphasize?: string[];
+      addressee?: string;
     }
   ) {
     return this.jobApplicationsService.generateCoverLetter(id, body);
@@ -120,12 +122,13 @@ export class JobApplicationsController {
   @ApiBody({ schema: { properties: { 
     tone: { type: 'string' }, 
     include_cover_letter: { type: 'boolean' },
+    addressee: { type: 'string', default: 'Hiring Manager' },
     email_type: { type: 'string', enum: ['short_intro', 'cover_letter_format', 'follow_up', 'cold_outreach'] },
     verbosity: { type: 'string', enum: ['low', 'medium', 'high'] }
   } } })
   generateEmail(
     @Param('id') id: string,
-    @Body() body: { tone?: string; include_cover_letter?: boolean; email_type?: string; verbosity?: string }
+    @Body() body: { tone?: string; include_cover_letter?: boolean; email_type?: string; verbosity?: string; addressee?: string }
   ) {
     return this.jobApplicationsService.generateEmail(id, body);
   }

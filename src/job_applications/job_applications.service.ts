@@ -215,7 +215,7 @@ async findAll() {
 }
 
 // GENERATE COVER LETTER - calls AI service
-async generateCoverLetter(id: string, preferences: { tone?: string; length?: string; emphasize?: string[] }) {
+async generateCoverLetter(id: string, preferences: { tone?: string; length?: string; emphasize?: string[]; addressee?: string }) {
   const application = await this.findOne(id);
   const masterProfile = await this.masterProfileRepository.findOneBy({ userId: application.userId });
   const job = await this.jobRepository.findOneBy({ id: application.jobId });
@@ -236,7 +236,7 @@ async generateCoverLetter(id: string, preferences: { tone?: string; length?: str
       profile: masterProfile.structured_data_json,
       job: job.structured_job_json,
       preferences: {
-        addressee: 'Hiring Manager',
+        addressee: preferences.addressee ?? 'Hiring Manager',
         tone: preferences.tone ?? 'professional',
         length: preferences.length ?? 'medium',
       },
@@ -329,7 +329,7 @@ async revertCoverLetter(id: string, version: number) {
 }
 
 // GENERATE EMAIL - calls AI service
-async generateEmail(id: string, options: { tone?: string; include_cover_letter?: boolean; email_type?: string; verbosity?: string }) {
+async generateEmail(id: string, options: { tone?: string; include_cover_letter?: boolean; email_type?: string; verbosity?: string; addressee?: string }) {
   const application = await this.findOne(id);
   const job = await this.jobRepository.findOneBy({ id: application.jobId });
   const user = await this.userRepository.findOneBy({ id: application.userId });
@@ -356,7 +356,7 @@ async generateEmail(id: string, options: { tone?: string; include_cover_letter?:
       preferences: {
       email_type: options.email_type ?? 'short_intro',
       tone: options.tone ?? 'professional',
-      addressee: 'Hiring Manager',
+      addressee: options.addressee ?? 'Hiring Manager',
       include_subject: true,
     },
     verbosity: options.verbosity ?? 'low',
