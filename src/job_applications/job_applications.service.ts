@@ -366,12 +366,6 @@ async generateEmail(id: string, options: { tone?: string; include_cover_letter?:
   const { subject } = response.data;
   const body = response.data.draft;
 
-  // save to application
-  await this.jobApplicationRepository.update(id, {
-    emailSubject: subject,
-    emailBody: body,
-  });
-
   // create timeline event
   await this.timelineRepository.save(
     this.timelineRepository.create({
@@ -383,7 +377,54 @@ async generateEmail(id: string, options: { tone?: string; include_cover_letter?:
     })
   );
 
+  // save to application
+  await this.jobApplicationRepository.update(id, {
+    emailSubject: subject,
+    emailBody: body,
+  });
+
+  // save version snapshot
+  await this.saveVersion(id, ContentType.EMAIL, body, CreatedBy.AI);
   return { subject, body };
+}
+
+// REFINE EMAIL - calls AI service
+async refineEmail(id: string, instruction: string, preferences?: { tone?: string; email_type?: string; addressee?: string; verbosity?: string }) {
+  const application = await this.findOne(id);
+
+  if (!application.emailBody) {
+    throw new NotFoundException(`No email found for this application. Generate an email first.`);
+  }
+
+  const response = await firstValueFrom(
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/email/refine`, {
+      user_id: application.userId,
+      job_id: application.jobId,
+      email_id: crypto.randomUUID(),
+      current_draft: application.emailBody,
+      current_subject: application.emailSubject,
+      instruction,
+      preferences: {
+        email_type: preferences?.email_type ?? 'short_intro',
+        tone: preferences?.tone ?? 'professional',
+        addressee: preferences?.addressee ?? 'Hiring Manager',
+        include_subject: true,
+      },
+      verbosity: preferences?.verbosity ?? 'low',
+    })
+  );
+
+  const subject = response.data.subject;
+  const body = response.data.draft;
+
+  await this.jobApplicationRepository.update(id, {
+    emailSubject: subject,
+    emailBody: body,
+  });
+
+  await this.saveVersion(id, ContentType.EMAIL, body, CreatedBy.AI_REFINEMENT);
+
+  return { subject, body, version: response.data.version };
 }
 
 // UPDATE EMAIL MANUALLY

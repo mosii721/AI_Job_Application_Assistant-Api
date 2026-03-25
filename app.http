@@ -1,7 +1,7 @@
 @url1 = https://ai-job-application-assistant-api.onrender.com/api/v1
 @url = http://localhost:5000/api/v1
 
-@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0NDc0Njc3LCJleHAiOjE3NzQ0NzczNzd9.gCpZmn-4m7QRX0dm5vqjmA38Og1knO9hRKgQv04SfO4
+@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0NDc3NDI5LCJleHAiOjE3NzQ0ODAxMjl9.SZVgpw_syqkER6_fOKMqOJyFIWPfjaPNWYy6wJU4ruM
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
 idUser = c145911f-a878-4c9a-9d9b-00adfb2c50b6
 jobid = ef315272-8fb1-4964-9a1a-aa617b58c259
@@ -295,7 +295,20 @@ Content-Type: application/json
   "include_cover_letter": false,
   "email_type": "short_intro",
   "verbosity": "low",
-  "addressee" : "HR"
+  "addressee" : "IT Manager"
+}
+
+// refine email
+###
+POST {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/email/refine
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "instruction": "Make it shorter and more direct",
+  "tone": "confident",
+  "email_type": "short_intro",
+  "verbosity": "low"
 }
 
 // update email manually

@@ -133,6 +133,22 @@ export class JobApplicationsController {
     return this.jobApplicationsService.generateEmail(id, body);
   }
 
+  // REFINE EMAIL
+  @Post(':id/email/refine')
+  @ApiBody({ schema: { properties: { 
+    instruction: { type: 'string' },
+    tone: { type: 'string' },
+    email_type: { type: 'string', enum: ['short_intro', 'cover_letter_format', 'follow_up', 'cold_outreach'] },
+    addressee: { type: 'string', default: 'Hiring Manager' },
+    verbosity: { type: 'string', enum: ['low', 'medium', 'high'] }
+  } } })
+  refineEmail(
+    @Param('id') id: string,
+    @Body() body: { instruction: string; tone?: string; email_type?: string; addressee?: string; verbosity?: string }
+  ) {
+    return this.jobApplicationsService.refineEmail(id, body.instruction, body);
+  }
+
   // UPDATE EMAIL MANUALLY
   @Patch(':id/email')
   @ApiBody({ schema: { properties: { subject: { type: 'string' }, body: { type: 'string' } } } })
