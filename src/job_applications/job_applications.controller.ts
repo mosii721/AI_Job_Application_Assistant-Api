@@ -268,5 +268,17 @@ export class JobApplicationsController {
     );
   }
 
+  // PREVIEW SCORE - before creating application
+  @Post('preview-score')
+  @ApiBody({ schema: { properties: { 
+    userId: { type: 'string' }, 
+    jobId: { type: 'string' } 
+  } } })
+  previewScore(
+    @Body() body: { userId: string; jobId: string }
+  ) {
+    return this.jobApplicationsService.previewScore(body.userId, body.jobId);
+  }
+
   
 }

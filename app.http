@@ -1,10 +1,10 @@
 @url1 = https://ai-job-application-assistant-api.onrender.com/api/v1
 @url = http://localhost:5000/api/v1
 
-@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YWY5ODgwMi0yZDJlLTQ1ZjctOTZjMy02N2Y1ODM4MjYyMDAiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0NDc3NDI5LCJleHAiOjE3NzQ0ODAxMjl9.SZVgpw_syqkER6_fOKMqOJyFIWPfjaPNWYy6wJU4ruM
+@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhMmU0MWI5ZC1iNmE1LTQwYmYtOWI5NC03MjlkMWI3ZDA3MzEiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0ODIzNDkzLCJleHAiOjE3NzQ4MjYxOTN9.qyQ9bnl89XMLNQo8Pj4XJjnu_HoD4TIUfk6suX2BEe8
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
-idUser = c145911f-a878-4c9a-9d9b-00adfb2c50b6
-jobid = ef315272-8fb1-4964-9a1a-aa617b58c259
+idUser = df4131ce-06ba-4374-9e48-88ec843a8896
+jobid = 09a7b16e-b90d-4ed8-a287-239924541447
 job aplication id = 4c112fe5-bec3-4e0d-9676-c5cd5278703e
 
 ###
@@ -14,7 +14,7 @@ Content-Type: application/json
 
 {
   "email":"mikealwanga97@gmail.com",
-  "password":"password7"
+  "password":"password"
 }
 
 
@@ -66,7 +66,7 @@ Content-Type: application/json
 
 
 {
-  "name": "Mike Kiprop Alwanga",
+  "name": "Mike Kiprop",
   "phone":"0733031821",
   "email":"kipropmike58@gmail.com",
   "password":"password",
@@ -423,6 +423,17 @@ Authorization: Bearer {{accessToken}}
 GET {{url}}/job-applications/4c112fe5-bec3-4e0d-9676-c5cd5278703e/pdf/preview
 Authorization: Bearer {{accessToken}}
 
+// preview score before applying
+###
+POST {{url}}/job-applications/preview-score
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "userId": "df4131ce-06ba-4374-9e48-88ec843a8896",
+  "jobId": "09a7b16e-b90d-4ed8-a287-239924541447"
+}
+
 ###
 DELETE {{url}}/job-applications/beaab228-ab10-4552-b053-d99eeb03794f
 Authorization: Bearer {{accessToken}}
@@ -437,6 +448,7 @@ Authorization: Bearer {{accessToken}}
   "url": "https://remoteok.com/remote-jobs/remote-security-engineer-ii-canada-nerdwallet-1130860"
 }
 
+# 
 //check duplicates
 ###
 POST {{url}}/jobs/check-duplicate

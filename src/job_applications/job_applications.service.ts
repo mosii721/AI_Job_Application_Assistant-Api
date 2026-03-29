@@ -763,4 +763,30 @@ async refineSnapshot(id: string, section: string, currentSuggestion: any, instru
     version: response.data.version,
   };
 }
+
+// PREVIEW SCORE - score without creating application
+async previewScore(userId: string, jobId: string) {
+  const masterProfile = await this.masterProfileRepository.findOneBy({ userId });
+  if (!masterProfile) {
+    throw new NotFoundException(`Master profile for user ${userId} not found`);
+  }
+
+  const job = await this.jobRepository.findOneBy({ id: jobId });
+  if (!job) {
+    throw new NotFoundException(`Job with id ${jobId} not found`);
+  }
+
+  const matchResponse = await firstValueFrom(
+    this.httpService.post(`${process.env.AI_SERVICE_URL}/scoring/match`, {
+      user_id: userId,
+      job_id: jobId,
+      profile: masterProfile.structured_data_json,
+      job: job.structured_job_json,
+      profile_embeddings: masterProfile.resume_embedding,
+      job_embeddings: job.job_embedding,
+    })
+  );
+
+  return matchResponse.data;
+}
 }
