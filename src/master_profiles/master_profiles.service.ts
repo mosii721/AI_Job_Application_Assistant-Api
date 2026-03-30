@@ -49,11 +49,20 @@ export class MasterProfilesService {
   );
   const structuredData = enhanceResponse.data; // AI returns structured data directly
 
+  const sections: string[] = [];
+  if (structuredData.skills?.length > 0) sections.push('skills');
+  if (structuredData.summary) sections.push('summary');
+  if (structuredData.experience?.length > 0) sections.push('experience');
+  if (structuredData.education?.length > 0) sections.push('education');
+
+  // fallback - if somehow all sections are empty just use summary
+  if (sections.length === 0) sections.push('summary');
+
   // 2. call AI to generate embedding for the resume
   const embeddingResponse = await firstValueFrom(
     this.httpService.post(`${process.env.AI_SERVICE_URL}/embeddings/profile`, {
       profile_id: profileId,
-      sections: ['skills', 'experience', 'education', 'summary'],
+      sections,
       data: structuredData, // pass the parsed resume data
     })
   );
