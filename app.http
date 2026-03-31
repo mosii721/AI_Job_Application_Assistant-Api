@@ -813,4 +813,3 @@ Authorization: Bearer {{accessToken}}
 // ping
 ###
 GET {{url}}/ping
-Authorization: Bearer {{accessToken}}
