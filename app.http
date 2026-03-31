@@ -1,7 +1,7 @@
 @url1 = https://ai-job-application-assistant-api.onrender.com/api/v1
 @url = http://localhost:5000/api/v1
 
-@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhMmU0MWI5ZC1iNmE1LTQwYmYtOWI5NC03MjlkMWI3ZDA3MzEiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0ODIzNDkzLCJleHAiOjE3NzQ4MjYxOTN9.qyQ9bnl89XMLNQo8Pj4XJjnu_HoD4TIUfk6suX2BEe8
+@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhMmU0MWI5ZC1iNmE1LTQwYmYtOWI5NC03MjlkMWI3ZDA3MzEiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0OTk5NTA4LCJleHAiOjE3NzUwMDIyMDh9.-E_CQUS7Svt3XrnJGoYDaXHLTcre5RjFUlkFUR45NGA
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
 idUser = df4131ce-06ba-4374-9e48-88ec843a8896
 jobid = 09a7b16e-b90d-4ed8-a287-239924541447
@@ -652,12 +652,12 @@ Authorization: Bearer {{accessToken}}
 
 //get recomendations for user
 ###
-GET {{url}}/recommendations/c145911f-a878-4c9a-9d9b-00adfb2c50b6
+GET {{url}}/recommendations/df4131ce-06ba-4374-9e48-88ec843a8896
 Authorization: Bearer {{accessToken}}
 
 //mark recomendations as processed
 ###
-POST {{url}}/recommendations/process/c145911f-a878-4c9a-9d9b-00adfb2c50b6/20483522-d572-4539-a307-ca5b0a5c6238
+POST {{url}}/recommendations/process/df4131ce-06ba-4374-9e48-88ec843a8896/20483522-d572-4539-a307-ca5b0a5c6238
 Authorization: Bearer {{accessToken}}
 
 //delete recommendations 
@@ -774,10 +774,10 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "userId": "0b53851b-98fe-49aa-8903-d7c9eab94fa6",
-  "preferredRoles":["Frontend Developer", "Graphic Designer"],
+  "userId": "df4131ce-06ba-4374-9e48-88ec843a8896",
+  "preferredRoles":["Backend Developer", "Graphic Designer","Data Analyst","It Support Specialist"],
   "industries":["Technology", "FinTech"],
-  "experienceLevel":"senior",
+  "experienceLevel":"junior",
   "locationPreference":["Nairobi", "Kutus","kenya"],
   "jobType":["full_time", "internship","part_time"]
 }
@@ -808,4 +808,9 @@ Authorization: Bearer {{accessToken}}
 // trigger recommendation cron job manually
 ###
 POST {{url}}/recommendations/trigger
+Authorization: Bearer {{accessToken}}
+
+// ping
+###
+GET {{url}}/ping
 Authorization: Bearer {{accessToken}}

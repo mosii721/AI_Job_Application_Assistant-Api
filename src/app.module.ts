@@ -20,6 +20,7 @@ import { UserPreferencesModule } from './user_preferences/user_preferences.modul
 import { RecommendedJobsModule } from './recommended_jobs/recommended_jobs.module';
 import { SuggestionFeedbacksModule } from './suggestion_feedbacks/suggestion_feedbacks.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { AppController } from './app/app.controller';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -38,7 +39,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     DatabaseModule, 
     AuthModule, 
     MailModule, JobApplicationsModule, JobsModule, UserDocumentsModule, ApplicationDocumentsModule, ApplicationVersionsModule, ApplicationTimelinesModule, UserPreferencesModule, RecommendedJobsModule, SuggestionFeedbacksModule],
-  controllers: [],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_GUARD,
