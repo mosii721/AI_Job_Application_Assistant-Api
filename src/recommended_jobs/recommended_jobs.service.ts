@@ -41,6 +41,8 @@ export class RecommendedJobsService {
     for (const user of users) {
       if (!user.preferences) continue;
 
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
       try {
         // 2. fetch jobs from BrighterMonday and Remotive
         const [brighterMondayJobs, remotiveJobs, findworkJobs] = await Promise.all([
@@ -149,7 +151,7 @@ export class RecommendedJobsService {
         })
       );
 
-      return response.data.results.map((job: any) => ({
+      return response.data.results.slice(0, 5).map((job: any) => ({
         url: job.url,
         source: 'findwork',
       }));
