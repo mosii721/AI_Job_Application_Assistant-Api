@@ -4,9 +4,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
     imports: [
-        ConfigModule,
+        ConfigModule, // not necceessary since it is global in app.module but it is here for clarity
         TypeOrmModule.forRootAsync({
-            imports: [ConfigModule],
+            imports: [ConfigModule], // not necceessary since it is global in app.module but it is here for clarity
             useFactory: async (configService: ConfigService) => ({
                 type: 'postgres',
                 url: configService.getOrThrow<string>('DATABASE_URL'),
@@ -16,7 +16,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
                 logging: configService.getOrThrow<string>('DB_LOGGING') === 'true',
                 migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
             }),
-            inject: [ConfigService],
+            inject: [ConfigService], // injecting ConfigService to use in useFactory
         }),
     ],
     providers: [],

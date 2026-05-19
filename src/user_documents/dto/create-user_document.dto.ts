@@ -47,3 +47,34 @@ export class CreateUserDocumentDto {
     @IsString()
     expiryDate?: string; // for certifications, optional for resumes
 }
+
+
+export class SupportingDocumentDto {
+    @ApiProperty({ description: 'Type of the supporting document (e.g. certification, portfolio, etc.)' })
+    @IsEnum(DocumentType)
+    type: DocumentType;
+
+    @ApiProperty({ description: 'Name of the supporting document (e.g. "AWS Certified Solutions Architect", "Personal Portfolio", etc.)' })
+    @IsString()
+    name: string;
+
+    @ApiProperty({ description: 'Name of the certificate (e.g. "AWS Certified Solutions Architect", "Google Cloud Professional Data Engineer", etc.)' })
+    @IsOptional()
+    @IsString()
+    certificateName?: string; // for certifications, optional for other supporting documents
+
+    @ApiProperty({ description: 'Issuing organization of the certificate (e.g. "Amazon Web Services", "Google Cloud", etc.)' })
+    @IsOptional()
+    @IsString()
+    issuingOrg?: string; // for certifications, optional for other supporting documents
+
+    @ApiProperty({ description: 'Date when the certificate was issued (optional for other supporting documents)' })
+    @IsOptional()
+    @IsString()
+    issueDate?: string; // for certifications, optional for other supporting documents
+
+    @ApiProperty({ description: 'Date when the certificate expires (optional for other supporting documents and some certifications)' })
+    @IsOptional()
+    @IsString()
+    expiryDate?: string; // for certifications, optional for other supporting documents
+}

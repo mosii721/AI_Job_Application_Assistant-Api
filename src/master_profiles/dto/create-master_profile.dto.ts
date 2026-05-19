@@ -1,4 +1,4 @@
-import { IsArray, IsInt, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
+import { IsArray, IsEmail, IsInt, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
 
@@ -148,4 +148,46 @@ export class CreateMasterProfileDto {
     @ApiProperty({ description: 'Embedding vector for the master profile' })
     @IsOptional()
     resume_embedding: Record<string, number[]>;
+}
+
+export class PersonalInfoDto {
+    @IsOptional()
+    @IsString()
+    name?: string;
+
+    @IsOptional()
+    @IsEmail()
+    email?: string;
+
+    @IsOptional()
+    @IsString()
+    phone?: string;
+
+    @IsOptional()
+    @IsString()
+    linkedin?: string;
+
+    @IsOptional()
+    @IsString()
+    github?: string;
+
+    @IsOptional()
+    @IsString()
+    portfolio?: string;
+
+    @IsOptional()
+    @IsString()
+    website?: string;
+
+    @IsOptional()
+    @IsString()
+    location?: string;
+
+    @IsOptional()
+    @IsString()
+    photo_url?: string;
+
+    @IsOptional()
+    @IsString()
+    nationality?: string;
 }

@@ -1,7 +1,7 @@
 @url1 = https://ai-job-application-assistant-api.onrender.com/api/v1
 @url = http://localhost:5000/api/v1
 
-@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhMmU0MWI5ZC1iNmE1LTQwYmYtOWI5NC03MjlkMWI3ZDA3MzEiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc0OTk5NTA4LCJleHAiOjE3NzUwMDIyMDh9.-E_CQUS7Svt3XrnJGoYDaXHLTcre5RjFUlkFUR45NGA
+@accessToken =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhMmU0MWI5ZC1iNmE1LTQwYmYtOWI5NC03MjlkMWI3ZDA3MzEiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc1MDc0OTgwLCJleHAiOjE3NzUwNzc2ODB9.6j9C-hzsCDiRsguRTLGM0lxJ71k0HKS6txGwEVhlrfw
 @refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzMjg1MzdhMy03M2E4LTQ3MzYtYjA4My0yY2Y2NGViMmU0ZGIiLCJlbWFpbCI6Im1pa2VhbHdhbmdhOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzcwMTYwNTkxLCJleHAiOjE3NzAxNjE0OTF9.847r9EVJg_LzoO_fYBVA9mQw89DLczPpSUow0s-_XjY
 idUser = df4131ce-06ba-4374-9e48-88ec843a8896
 jobid = 09a7b16e-b90d-4ed8-a287-239924541447
@@ -89,7 +89,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE {{url}}/users/f6d78958-add2-4601-9e84-e40c0f788bb3 
+DELETE {{url}}/users/0275b95d-fa4e-4482-be2e-4ca5bfafbb40
 Authorization: Bearer {{accessToken}}
 
 // add document to application app id is on the url 

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { MasterProfilesService } from './master_profiles.service';
 import { UpdateMasterProfileDto } from './dto/update-master_profile.dto';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { EducationDto, ExperienceDto, PersonalInfoDto } from './dto/create-master_profile.dto';
 
 @ApiTags('master-profiles')
 @ApiBearerAuth()
@@ -27,9 +28,9 @@ export class MasterProfilesController {
   @ApiBody({ schema: { properties: { name: { type: 'string' } } } })
   addSkill(
     @Param('userId') userId: string,
-    @Body() body: { name: string }
+    @Body('name') name: string 
   ) {
-    return this.masterProfilesService.addSkill(userId, body.name);
+    return this.masterProfilesService.addSkill(userId, name);
   }
 
   // REMOVE SKILL
@@ -58,9 +59,8 @@ export class MasterProfilesController {
   } } })
   addExperience(
     @Param('userId') userId: string,
-    @Body() body: { company: string; role: string; start_date?: string; end_date?: string; is_current?: boolean; industry?: string; location?: string; employment_type?: string; bullets?: string[]; duration_months?: number; duration_estimated?: boolean }
-  ) {
-    return this.masterProfilesService.addExperience(userId, body);
+    @Body() experienceDto: ExperienceDto) {
+    return this.masterProfilesService.addExperience(userId, experienceDto);
   }
 
   // UPDATE EXPERIENCE
@@ -81,9 +81,8 @@ export class MasterProfilesController {
   updateExperience(
     @Param('userId') userId: string,
     @Param('index') index: string,
-    @Body() body: { company?: string; role?: string; start_date?: string; end_date?: string; is_current?: boolean; industry?: string; location?: string; employment_type?: string; bullets?: string[]; duration_months?: number; duration_estimated?: boolean }
-  ) {
-    return this.masterProfilesService.updateExperience(userId, parseInt(index), body);
+    @Body() experienceDto: ExperienceDto) {
+    return this.masterProfilesService.updateExperience(userId, parseInt(index), experienceDto);
   }
 
   // REMOVE EXPERIENCE
@@ -108,9 +107,8 @@ export class MasterProfilesController {
   } } })
   addEducation(
     @Param('userId') userId: string,
-    @Body() body: { institution: string; degree: string; field?: string; graduation_year?: number; graduation_year_estimated?: boolean; grade?: string; relevant_coursework?: string[] }
-  ) {
-    return this.masterProfilesService.addEducation(userId, body);
+    @Body() educationDto: EducationDto) {
+    return this.masterProfilesService.addEducation(userId, educationDto);
   }
 
   // UPDATE EDUCATION
@@ -127,9 +125,8 @@ export class MasterProfilesController {
   updateEducation(
     @Param('userId') userId: string,
     @Param('index') index: string,
-    @Body() body: { institution: string; degree?: string; field?: string; graduation_year?: number; graduation_year_estimated?: boolean; grade?: string; relevant_coursework?: string[]  }
-  ) {
-    return this.masterProfilesService.updateEducation(userId, parseInt(index), body);
+    @Body() educationDto: EducationDto) {
+    return this.masterProfilesService.updateEducation(userId, parseInt(index), educationDto);
   }
 
   // REMOVE EDUCATION
@@ -172,9 +169,8 @@ export class MasterProfilesController {
   } } })
   updatePersonal(
     @Param('userId') userId: string,
-    @Body() body: { name?: string; location?: string; email?: string; phone?: string; nationality?: string; linkedin?: string; github?: string; portfolio?: string; website?: string; photo_url?: string }
-  ) {
-    return this.masterProfilesService.updatePersonal(userId, body);
+    @Body() personalInfoDto: PersonalInfoDto) {
+    return this.masterProfilesService.updatePersonal(userId, personalInfoDto);
   }
 
   // DELETE

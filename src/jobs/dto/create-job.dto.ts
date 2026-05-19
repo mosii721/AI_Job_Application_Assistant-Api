@@ -198,3 +198,28 @@ export class CreateJobDto {
     @IsString()
     url_hash: string;
 }
+
+export class JobFiltersDto {
+  @IsOptional()
+  @IsString()
+  location?: string;
+
+  @IsOptional()
+  @IsString()
+  role?: string;
+
+  @IsOptional()
+  @IsString()
+  mode?: string;
+}
+
+export class SearchJobsDto {
+  @IsOptional()
+  @IsString()
+  query?: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => JobFiltersDto)
+  filters?: JobFiltersDto;
+}

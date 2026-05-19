@@ -7,6 +7,7 @@ import { memoryStorage } from 'multer';
 import { UserDocumentsService } from './user_documents.service';
 import { DocumentType } from './entities/user_document.entity';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { SupportingDocumentDto } from './dto/create-user_document.dto';
 
 @ApiTags('user-documents')
 @ApiBearerAuth()
@@ -61,16 +62,8 @@ export class UserDocumentsController {
   uploadDocument(
     @Body('userId') userId: string,
     @UploadedFile() file: Express.Multer.File,
-    @Body() body: {
-      type: DocumentType;
-      name: string;
-      certification_name?: string;
-      issuing_org?: string;
-      issue_date?: string;
-      expiry_date?: string;
-    }
-  ) {
-    return this.userDocumentsService.uploadDocument(userId, file, body);
+    @Body() supportingDocumentsDto: SupportingDocumentDto) {
+    return this.userDocumentsService.uploadDocument(userId, file, supportingDocumentsDto);
   }
 
   // UPLOAD PROFILE PHOTO

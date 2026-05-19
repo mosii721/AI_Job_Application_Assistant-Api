@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { JobsService } from './jobs.service';
 import { UpdateJobDto } from './dto/update-job.dto';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { SearchJobsDto } from './dto/create-job.dto';
 
 @ApiTags('jobs')
 @ApiBearerAuth()
@@ -12,29 +13,22 @@ export class JobsController {
   // SCRAPE AND CREATE JOB - main endpoint
   @Post('scrape')
   @ApiBody({ schema: { properties: { url: { type: 'string' } } } })
-  scrapeAndCreate(@Body() body: { url: string }) {
-    return this.jobsService.scrapeAndCreate(body.url);
+  scrapeAndCreate(@Body('url')  url: string ) {
+    return this.jobsService.scrapeAndCreate(url);
   }
 
   // CHECK DUPLICATE
   @Post('check-duplicate')
   @ApiBody({ schema: { properties: { url: { type: 'string' } } } })
-  checkDuplicate(@Body() body: { url: string }) {
-    return this.jobsService.checkDuplicate(body.url);
+  checkDuplicate(@Body('url') url: string) {
+    return this.jobsService.checkDuplicate(url);
   }
 
   // SEARCH JOBS
   @Post('search')
   @ApiBody({ schema: { properties: { query: { type: 'string' }, filters: { type: 'object', properties: { location: { type: 'string' }, role: { type: 'string' }, mode: { type: 'string' } } } } } })
-  search(@Body() body: {
-    query?: string;
-    filters?: {
-      location?: string;
-      role?: string;
-      mode?: string;
-    };
-  }) {
-    return this.jobsService.search(body);
+  search(@Body() searchJobDto:SearchJobsDto) {
+    return this.jobsService.search(searchJobDto);
   }
 
   // GET ALL - admin only
