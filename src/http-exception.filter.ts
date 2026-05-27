@@ -52,7 +52,7 @@ export class AllExceptionFilters extends BaseExceptionFilter{
                                 ? myResponseObj.response
                                 : JSON.stringify(myResponseObj.response)
 
-        const fullLog = `[ERROR] ${myResponseObj.timestamp} | Client Ip ${clientIp} | Path ${request.url} | Message ${logMessage}`
+        const fullLog = `[ERROR] ${myResponseObj.timestamp} | Client Ip: ${clientIp} | Path: ${request.url} | Message: ${logMessage}`
         console.error(fullLog)
 
         if(exception instanceof Error) {
