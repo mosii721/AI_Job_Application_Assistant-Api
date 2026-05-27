@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch, HttpException, HttpStatus } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
-import { Request, response } from "express";
+import { Request, Response } from "express";
 
 
 interface MyResponseObj {
@@ -27,6 +27,7 @@ export class AllExceptionFilters extends BaseExceptionFilter{
     catch(exception: any, host: ArgumentsHost) {
         const ctx = host.switchToHttp()
         const request = ctx.getRequest<Request>()
+        const response = ctx.getResponse<Response>()
         const clientIp = this.getClientIp(request)
 
         const myResponseObj: MyResponseObj = {
